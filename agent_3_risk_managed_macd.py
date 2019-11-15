@@ -111,5 +111,5 @@ if __name__ == "__main__":
 #     agent = MyAgent(username="joe", password="1234",
 #                     ticker="tcp://icats.doc.ic.ac.uk:7000",
 #                     endpoint="http://icats.doc.ic.ac.uk")
-    agent = MyAgent(backtest="backtest_GBPUSD.csv")
+    agent = MyAgent(backtest="data/backtest_GBPUSD.csv")
     agent.run()
