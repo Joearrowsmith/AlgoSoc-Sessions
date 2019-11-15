@@ -13,7 +13,7 @@ def optimise_expected_return(Agent, test_cases, verbose=False, **kwargs):
         agent.run()
         bal = agent.balance
         test_balances.append(bal)
-    return list(zip(test_cases, test_balances))
+    return list(zip(test_params, test_balances))
 
 
 def check_sublists_same_size(test_list):
@@ -25,9 +25,9 @@ def check_sublists_same_size(test_list):
     
 if __name__=='__main__':
     from agent_1_simple_macd import SimpleMACDAgent
-    test_cases = {'fast_length':[ 5,10,20],
-                  'slow_length':[25,25,40]}
+    test_cases = {'fast_length':[ 5,10,20,20,60],
+                  'slow_length':[25,25,40,80,120]}
     outputs = optimise_expected_return(SimpleMACDAgent, test_cases,
-                                       backtest='data/backtest_GBPUSD.csv')
+                                       backtest='data/backtest_GBPUSD_12_hours.csv')
     print(outputs)
     

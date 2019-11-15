@@ -9,9 +9,9 @@ class EchoAgent(Agent):
         
         
 if __name__=='__main__':
-    backtest = False
+    backtest = True
     if backtest:
-        agent = EchoAgent(backtest='data/backtest_GBPUSD.csv')
+        agent = EchoAgent(backtest='data/GBPUSD_161119.csv')
     else:
         agent = EchoAgent(username='joe', password='1234',
                           ticker='tcp://icats.doc.ic.ac.uk:7000',
