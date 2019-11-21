@@ -29,7 +29,7 @@ Master: ![Master](https://travis-ci.com/Joearrowsmith/AlgoSoc-Sessions.svg?branc
 2. Simple MACD with optimal lengths \[fl: 120, sl: 250\]
    - returns = 0.099
 3. MACD with optimal length and optimal risk control \[fl: 120, sl: 250, ret length (rl): 100, risk scaling factor (rsf): 3.5\]
-   - returns: 0.899
+   - returns = 0.899
 
 ---
 
