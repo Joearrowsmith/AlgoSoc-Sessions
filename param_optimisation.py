@@ -43,10 +43,10 @@ def test_optimise_with_agent_1(backtest='data/backtest_GBPUSD_12_hours.csv', ver
     return test_param_balances
 
 
-def test_optimise_with_agent_3(backtest='data/backtest_GBPUSD_12_hours.csv', verbose=False, sort=False):
-    from agent_3_risk_managed_macd import RiskMACDAgent
+def test_optimise_with_agent_2(backtest='data/backtest_GBPUSD_12_hours.csv', verbose=False, sort=False):
+    from agent_2_risk_managed_macd import RiskMACDAgent
     if verbose:
-        print("Testing optimise with agent 3 - Risk MACD")
+        print("Testing optimise with agent 2 - Risk MACD")
     test_cases = {'fast_length':[120]*12,
                   'slow_length':[250]*12,
                   'ret_length':[100,200,300,400]*3,
@@ -66,4 +66,4 @@ def test_optimise_with_agent_3(backtest='data/backtest_GBPUSD_12_hours.csv', ver
     
 if __name__=='__main__':
     test_optimise_with_agent_1(verbose=True, sort=True)
-    test_optimise_with_agent_3(verbose=True, sort=True)
+    test_optimise_with_agent_2(verbose=True, sort=True)

@@ -70,7 +70,7 @@ class RiskMACDAgent(SimpleMACDAgent):
         self.rets = deque(maxlen=self.ret_length)
 
         
-def test_agent_3(backtest='data/backtest_GBPUSD_12_hours.csv', verbose=False):
+def test_agent_2(backtest='data/backtest_GBPUSD_12_hours.csv', verbose=False):
     agent = RiskMACDAgent(backtest=backtest, verbose=verbose)
     agent.run()
 
@@ -80,7 +80,7 @@ if __name__ == "__main__":
     if backtest:
         agent = RiskMACDAgent(backtest='data/backtest_GBPUSD_12_hours.csv')
     else:
-        agent = RiskMACDAgent(username='agent_1', password='1234',
+        agent = RiskMACDAgent(username='joe', password='1234',
                               ticker='tcp://icats.doc.ic.ac.uk:7000',
                               endpoint='http://icats.doc.ic.ac.uk')
     agent.run()

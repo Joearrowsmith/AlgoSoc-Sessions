@@ -18,7 +18,7 @@ class BuildDatasetAgent(Agent):
             writer.writerow(['tick', bid, ask, time_string])
 
 if __name__ == '__main__':
-    agent = BuildDatasetAgent(file_name='data/GBPUSD_161119.csv',
+    agent = BuildDatasetAgent(file_name='data/GBPUSD_new_dataset.csv',
                               username='joe', password='1234',
                               ticker='tcp://icats.doc.ic.ac.uk:7000',
                               endpoint='http://icats.doc.ic.ac.uk')
