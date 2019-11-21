@@ -68,25 +68,19 @@ class RiskMACDAgent(SimpleMACDAgent):
     def reset(self):
         self.count = 0
         self.rets = deque(maxlen=self.ret_length)
-        
 
+        
+def test_agent_3(backtest='data/backtest_GBPUSD_12_hours.csv', verbose=False):
+    agent = RiskMACDAgent(backtest=backtest, verbose=verbose)
+    agent.run()
+
+    
 if __name__ == "__main__":
-    param_optimise = False
-    if not param_optimise:
-        backtest = True
-        if backtest:
-            agent = RiskMACDAgent(backtest='data/backtest_GBPUSD_12_hours.csv')
-        else:
-            agent = RiskMACDAgent(username='agent_3', password='1234',
-                                  ticker='tcp://icats.doc.ic.ac.uk:7000',
-                                  endpoint='http://icats.doc.ic.ac.uk')
-        agent.run()  
+    backtest = True
+    if backtest:
+        agent = RiskMACDAgent(backtest='data/backtest_GBPUSD_12_hours.csv')
     else:
-        from agent_2_param_optimisation import optimise_expected_return
-        test_cases = {'fast_length':[20]*5,
-                      'slow_length':[40]*5,
-                      'ret_length':[100]*5,
-                      'risk_scaling_factor':[1,2,3,4,5]}
-        outputs = optimise_expected_return(RiskMACDAgent, test_cases,
-                                           backtest='data/backtest_GBPUSD_12_hours.csv')
-        print(outputs)
+        agent = RiskMACDAgent(username='agent_1', password='1234',
+                              ticker='tcp://icats.doc.ic.ac.uk:7000',
+                              endpoint='http://icats.doc.ic.ac.uk')
+    agent.run()

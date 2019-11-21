@@ -5,13 +5,14 @@ class EchoAgent(Agent):
         super().__init__(**kwargs)
         
     def on_tick(self, bid, ask, time=None):
-        print(f'{time} : {bid} {ask}')
-        
-        
+        print(f'Tick: {bid: .05f}, {ask: .05f}, {time}')
+
+    
+    
 if __name__=='__main__':
     backtest = True
     if backtest:
-        agent = EchoAgent(backtest='data/backtest_GBPUSD_12_hours.csv.csv')
+        agent = EchoAgent(backtest='data/backtest_GBPUSD_12_hours.csv')
     else:
         agent = EchoAgent(username='joe', password='1234',
                           ticker='tcp://icats.doc.ic.ac.uk:7000',
