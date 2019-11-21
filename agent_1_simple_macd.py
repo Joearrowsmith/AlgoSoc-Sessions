@@ -17,6 +17,9 @@ class SimpleMACDAgent(Agent):
         '''Called on every tick update.'''
         if self.verbose:
             print('Tick:', bid, ask, time)
+        self.order_macd(bid, ask)
+        
+    def order_macd(self, bid, ask):
         mid = (bid  + ask) / 2 
         self.fast.append(mid)
         self.slow.append(mid)
@@ -30,7 +33,8 @@ class SimpleMACDAgent(Agent):
             self.buy()
         else:
             self.sell()
-            
+        
+        
     def on_order(self, order):
         '''Called on placing a new order.'''
         if self.verbose:
