@@ -15,7 +15,7 @@ class RiskMACDAgent(SimpleMACDAgent):
     """An improved MACD trading agent with risk control measures."""
     name = "Risk_MACD"
     
-    def __init__(self, ret_length=100, fast_length=120, slow_length=250, verbose=False, 
+    def __init__(self, ret_length=100, fast_length=120, slow_length=250, risk_scaling_factor=1, verbose=False, 
                  **kwargs):
         assert fast_length < slow_length
         self.rets = deque(maxlen=ret_length)
@@ -23,6 +23,10 @@ class RiskMACDAgent(SimpleMACDAgent):
         self.slow = deque(maxlen=slow_length)
         
         self.verbose = verbose
+        self.warm_up = fast_length
+        self.count = 0
+        self.rets_std = 0
+        self.risk_scaling_factor = risk_scaling_factor
         
         super().__init__(**kwargs)
         
@@ -46,7 +50,31 @@ class RiskMACDAgent(SimpleMACDAgent):
         if self.verbose:
             print(f'Tick: {mid: .05f}, {time}')
         
-        self.order_macd(bid, ask)
+        signal = self.get_signal(bid, ask)
+        
+        if self.count > 3:
+            prev_mid = self.fast[-2]
+            ret = np.log(mid) - np.log(prev_mid)
+            self.rets.append(ret)
+            
+            rets_mean = np.mean(self.rets)
+            self.rets_std = np.std(self.rets)
+            
+            diff = ret - rets_mean 
+            
+            take_profit = self.rets_std * self.risk_scaling_factor + rets_mean
+            stop_loss = -1 * self.rets_std * self.risk_scaling_factor + rets_mean
+            
+            print(self.rets_std > diff)
+            
+            
+        
+        if self.warm_up < self.count: 
+            self.order_macd(signal)
+            
+            
+            
+        self.count += 1
         
         
         

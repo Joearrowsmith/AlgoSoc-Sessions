@@ -17,15 +17,19 @@ class SimpleMACDAgent(Agent):
         '''Called on every tick update.'''
         if self.verbose:
             print('Tick:', bid, ask, time)
-        self.order_macd(bid, ask)
+        signal = self.get_signal(bid, ask)
+        self.order_macd(signal)
         
-    def order_macd(self, bid, ask):
+    def get_signal(self, bid, ask):
         mid = (bid  + ask) / 2 
         self.fast.append(mid)
         self.slow.append(mid)
         slow_mean = np.mean(self.slow)
         fast_mean = np.mean(self.fast)
         signal = fast_mean - slow_mean
+        return signal 
+        
+    def order_macd(self, signal):
         
         if signal == 0:
             pass
