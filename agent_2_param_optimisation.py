@@ -25,8 +25,8 @@ def check_sublists_same_size(test_list):
     
 if __name__=='__main__':
     from agent_1_simple_macd import SimpleMACDAgent
-    test_cases = {'fast_length':[ 5,10,20,20,60],
-                  'slow_length':[25,25,40,80,120]}
+    test_cases = {'fast_length':[ 5,10,20,20,60,120,250,250],
+                  'slow_length':[25,25,40,80,120,250,500,750]}
     outputs = optimise_expected_return(SimpleMACDAgent, test_cases,
                                        backtest='data/backtest_GBPUSD_12_hours.csv')
     print(outputs)

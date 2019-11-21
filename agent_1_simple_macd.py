@@ -3,8 +3,9 @@ from collections import deque
 import numpy as np
 
 class SimpleMACDAgent(Agent):
+    name = "Simple_MACD"
     
-    def __init__(self, fast_length, slow_length, 
+    def __init__(self, fast_length=120, slow_length=250, 
                  verbose=False, **kwargs):
         super().__init__(**kwargs)
         assert fast_length < slow_length
@@ -44,11 +45,11 @@ class SimpleMACDAgent(Agent):
 
 
 if __name__ == '__main__':
-    backtest = False
+    backtest = True
     if backtest:
-        agent = SimpleMACDAgent(backtest='data/backtest_GBPUSD.csv')
+        agent = SimpleMACDAgent(backtest='data/backtest_GBPUSD_12_hours.csv')
     else:
-        agent = SimpleMACDAgent(username='joe', password='1234',
+        agent = SimpleMACDAgent(username='agent_1', password='1234',
                                 ticker='tcp://icats.doc.ic.ac.uk:7000',
                                 endpoint='http://icats.doc.ic.ac.uk')
     agent.run()    

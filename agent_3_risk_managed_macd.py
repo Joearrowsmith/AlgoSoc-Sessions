@@ -11,6 +11,7 @@ import numpy as np
 
 class RiskMACDAgent(Agent):
     """An improved MACD trading agent with risk control measures."""
+    name = "Risk_MACD"
     
     def __init__(self, **kwargs):
         
@@ -108,8 +109,11 @@ class RiskMACDAgent(Agent):
         
 
 if __name__ == "__main__":
-#     agent = MyAgent(username="joe", password="1234",
-#                     ticker="tcp://icats.doc.ic.ac.uk:7000",
-#                     endpoint="http://icats.doc.ic.ac.uk")
-    agent = MyAgent(backtest="data/backtest_GBPUSD.csv")
-    agent.run()
+    backtest = True
+    if backtest:
+        agent = RiskMACDAgent(backtest='data/backtest_GBPUSD_12_hours.csv')
+    else:
+        agent = RiskMACDAgent(username='agent_3', password='1234',
+                              ticker='tcp://icats.doc.ic.ac.uk:7000',
+                              endpoint='http://icats.doc.ic.ac.uk')
+    agent.run()  
