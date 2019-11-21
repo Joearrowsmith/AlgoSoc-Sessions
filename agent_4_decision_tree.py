@@ -45,7 +45,7 @@ class DecisionTreeAgent(Agent):
     # repeat successful trade
     self.tree.fit(self.X_train, self.y_train)
 
-  def on_tick(self, bid, ask):
+  def on_tick(self, bid, ask, time=None):
     """On tick handler."""
     if self.last_bid is None:
       self.last_bid = bid
