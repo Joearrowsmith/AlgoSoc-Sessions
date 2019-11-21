@@ -1,15 +1,6 @@
-from pedlar.agent import Agent
+from agent_1_simple_macd import SimpleMACDAgent
 from collections import deque
 import numpy as np
-
-from agent_1_simple_macd import SimpleMACDAgent
-
-
-### what is being implemented
-# take profit (make 2* moving std deviation)
-# stop loss (make 2* moving std deviation)
-###########################
-
 
 class RiskMACDAgent(SimpleMACDAgent):
     """An improved MACD trading agent with risk control measures."""
@@ -62,14 +53,10 @@ class RiskMACDAgent(SimpleMACDAgent):
             rets_mean = np.mean(self.rets)
             self.rets_std = np.std(self.rets)
             
-            diff = ret - rets_mean 
-            
             take_profit = self.rets_std * self.risk_scaling_factor + rets_mean
             stop_loss = -1 * self.rets_std * self.risk_scaling_factor + rets_mean
             
-            ret_diff = ret - rets_mean
-            
-            if (ret_diff > take_profit) or (ret_diff < stop_loss):
+            if (ret > take_profit) or (ret < stop_loss):
                 self.close()
                 self.reset()
         
@@ -84,11 +71,22 @@ class RiskMACDAgent(SimpleMACDAgent):
         
 
 if __name__ == "__main__":
-    backtest = True
-    if backtest:
-        agent = RiskMACDAgent(backtest='data/backtest_GBPUSD_12_hours.csv')
+    param_optimise = False
+    if not param_optimise:
+        backtest = True
+        if backtest:
+            agent = RiskMACDAgent(backtest='data/backtest_GBPUSD_12_hours.csv')
+        else:
+            agent = RiskMACDAgent(username='agent_3', password='1234',
+                                  ticker='tcp://icats.doc.ic.ac.uk:7000',
+                                  endpoint='http://icats.doc.ic.ac.uk')
+        agent.run()  
     else:
-        agent = RiskMACDAgent(username='agent_3', password='1234',
-                              ticker='tcp://icats.doc.ic.ac.uk:7000',
-                              endpoint='http://icats.doc.ic.ac.uk')
-    agent.run()  
+        from agent_2_param_optimisation import optimise_expected_return
+        test_cases = {'fast_length':[20]*5,
+                      'slow_length':[40]*5,
+                      'ret_length':[100]*5,
+                      'risk_scaling_factor':[1,2,3,4,5]}
+        outputs = optimise_expected_return(RiskMACDAgent, test_cases,
+                                           backtest='data/backtest_GBPUSD_12_hours.csv')
+        print(outputs)
