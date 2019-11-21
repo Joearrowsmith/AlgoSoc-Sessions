@@ -30,8 +30,8 @@ def test_optimise_with_agent_1(backtest='data/backtest_GBPUSD_12_hours.csv', ver
     from agent_1_simple_macd import SimpleMACDAgent
     if verbose:
         print("Testing optimise with agent 1 - Simple MACD")
-    test_cases = {'fast_length':[ 60,120,250],
-                  'slow_length':[120,250,500]}
+    test_cases = {'fast_length':[20, 60,100,120,120,250],
+                  'slow_length':[40,120,250,250,360,500]}
     test_param_balances = optimise_expected_return(SimpleMACDAgent, test_cases,
                                                    backtest=backtest,
                                                    verbose=verbose,

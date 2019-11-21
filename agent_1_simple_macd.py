@@ -55,7 +55,8 @@ if __name__ == '__main__':
     if backtest:
         agent = SimpleMACDAgent(backtest='data/backtest_GBPUSD_12_hours.csv')
     else:
-        agent = SimpleMACDAgent(username='agent_1', password='1234',
+        agent = SimpleMACDAgent(verbose=True,
+                                username='joe', password='1234',
                                 ticker='tcp://icats.doc.ic.ac.uk:7000',
                                 endpoint='http://icats.doc.ic.ac.uk')
     agent.run()

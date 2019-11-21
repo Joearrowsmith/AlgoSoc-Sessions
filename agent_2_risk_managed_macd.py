@@ -6,7 +6,7 @@ class RiskMACDAgent(SimpleMACDAgent):
     """An improved MACD trading agent with risk control measures."""
     name = "Risk_MACD"
     
-    def __init__(self, ret_length=100, fast_length=120, slow_length=250, risk_scaling_factor=3, verbose=False, 
+    def __init__(self, ret_length=100, fast_length=120, slow_length=250, risk_scaling_factor=3.5, verbose=False, 
                  **kwargs):
         assert fast_length < slow_length
         
@@ -76,11 +76,12 @@ def test_agent_2(backtest='data/backtest_GBPUSD_12_hours.csv', verbose=False):
 
     
 if __name__ == "__main__":
-    backtest = True
+    backtest = False
     if backtest:
         agent = RiskMACDAgent(backtest='data/backtest_GBPUSD_12_hours.csv')
     else:
-        agent = RiskMACDAgent(username='joe', password='1234',
+        agent = RiskMACDAgent(verbose=True, 
+                              username='joe', password='1234',
                               ticker='tcp://icats.doc.ic.ac.uk:7000',
                               endpoint='http://icats.doc.ic.ac.uk')
     agent.run()
