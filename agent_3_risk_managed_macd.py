@@ -18,7 +18,8 @@ class RiskMACDAgent(SimpleMACDAgent):
     def __init__(self, ret_length=100, fast_length=120, slow_length=250, risk_scaling_factor=1, verbose=False, 
                  **kwargs):
         assert fast_length < slow_length
-        self.rets = deque(maxlen=ret_length)
+        
+        self.ret_length = ret_length
         self.fast = deque(maxlen=fast_length)
         self.slow = deque(maxlen=slow_length)
         
@@ -29,6 +30,7 @@ class RiskMACDAgent(SimpleMACDAgent):
         self.risk_scaling_factor = risk_scaling_factor
         
         super().__init__(**kwargs)
+        self.reset()
         
     def on_order(self, order):
         """Called on placing a new order."""
@@ -65,20 +67,23 @@ class RiskMACDAgent(SimpleMACDAgent):
             take_profit = self.rets_std * self.risk_scaling_factor + rets_mean
             stop_loss = -1 * self.rets_std * self.risk_scaling_factor + rets_mean
             
-            print(self.rets_std > diff)
+            ret_diff = ret - rets_mean
             
-            
+            if (ret_diff > take_profit) or (ret_diff < stop_loss):
+                self.close()
+                self.reset()
         
         if self.warm_up < self.count: 
             self.order_macd(signal)
-            
-            
             
         self.count += 1
         
         
         
-        
+    def reset(self):
+        self.count = 0
+        self.rets = deque(maxlen=self.ret_length)
+            
     
     
     
@@ -129,7 +134,7 @@ class RiskMACDAgent(SimpleMACDAgent):
 if __name__ == "__main__":
     backtest = True
     if backtest:
-        agent = RiskMACDAgent(backtest='data/backtest_GBPUSD_12_hours.csv')
+        agent = RiskMACDAgent(verbose=True, backtest='data/backtest_GBPUSD_12_hours.csv')
     else:
         agent = RiskMACDAgent(username='agent_3', password='1234',
                               ticker='tcp://icats.doc.ic.ac.uk:7000',
