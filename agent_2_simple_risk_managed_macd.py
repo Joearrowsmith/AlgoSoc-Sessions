@@ -7,7 +7,7 @@ class SimpleRiskMACDAgent(SimpleMACDAgent):
     name = "Simple_Risk_MACD"
     
     def __init__(self, 
-                 stop_loss_scaling=1.1,
+                 stop_loss_scaling=1.5,
                  take_profit_scaling=3.5,
                  fast_length=120, slow_length=250, 
                  verbose=False, **kwargs):

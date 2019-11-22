@@ -60,8 +60,8 @@ def optimise_with_agent_2(backtest='data/backtest_GBPUSD_12_hours.csv',
     if simple:
         test_cases = {'fast_length':[120]*2,
                       'slow_length':[250]*2,
-                      'stop_loss_scaling':[100,100],
-                      'take_profit_scaling':[2.5,3.0]}
+                      'stop_loss_scaling':[1.1,1.5],
+                      'take_profit_scaling':[3.5,5.0]}
     else:
         test_cases = {'fast_length':[120]*49,
                       'slow_length':[250]*49,
@@ -109,9 +109,9 @@ def optimise_with_agent_3(backtest='data/backtest_GBPUSD_12_hours.csv',
 
     
 if __name__=='__main__':
-    simple=False
+    simple=True
     verbose=True
     sort=True
-    #optimise_with_agent_1(verbose=verbose, sort=sort, simple=simple)
+    optimise_with_agent_1(verbose=verbose, sort=sort, simple=simple)
     optimise_with_agent_2(verbose=verbose, sort=sort, simple=simple)
-    #optimise_with_agent_3(verbose=verbose, sort=sort, simple=simple)
+    optimise_with_agent_3(verbose=verbose, sort=sort, simple=simple)

@@ -9,7 +9,10 @@ Master: ![Master](https://travis-ci.com/Joearrowsmith/AlgoSoc-Sessions.svg?branc
 - A simple momentum strategy looking at the cross over of two moving averages.
 
 ### agent_2_risk_managed_macd.py
-- A momentum strategy with some risk measures. Inherits the base rules from simple MACD and implements a stop loss and take profit on top.
+- A momentum strategy with some risk measures. Inherits the base rules from simple MACD and implements a static stop loss and take profit on top.
+
+### agent_3_risk_managed_macd.py
+- A momentum strategy with some risk measures. Inherits the base rules from simple MACD and implements a dynamic stop loss if the asset becomes too volatile.
 
 ### build_dataset.py
 - A function to collect your own data using the live datastream from the pedlar server.
@@ -25,11 +28,13 @@ Master: ![Master](https://travis-ci.com/Joearrowsmith/AlgoSoc-Sessions.svg?branc
 ## Best Agent Backtest Performance through Versions:
 
 1. Simple MACD \[fast length (fl): 20, slow length (sl): 40\] 
-   - returns = -2.98
-2. Simple MACD with optimal lengths \[fl: 120, sl: 250\]
-   - returns = 0.099
-3. MACD with optimal length and optimal risk control \[fl: 120, sl: 250, ret length (rl): 100, risk scaling factor (rsf): 3.5\]
-   - returns = 0.899
+   - returns = -2.98...
+2. Simple MACD with "optimal" lengths \[fl: 120, sl: 250\]
+   - returns = 0.099...
+3. MACD with "optimal" length and dynamic risk control \[fl: 120, sl: 250, ret length (rl): 100, risk scaling factor (rsf): 3.5\]
+   - returns = 0.899...
+4. MACD with "optimal" length and dynamic risk control \[fl : 120, sl : 250, stop loss scaling (sls)} : 1.1, take profit scaling (tps) : 3.5]
+   - returns = 1.909...
 
 ---
 
