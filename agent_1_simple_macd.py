@@ -5,7 +5,8 @@ import numpy as np
 class SimpleMACDAgent(Agent):
     name = "Simple_MACD"
     
-    def __init__(self, fast_length=15, slow_length=40, 
+    def __init__(self, 
+                 fast_length=15, slow_length=40, 
                  verbose=False, **kwargs):
         super().__init__(**kwargs)
         assert fast_length < slow_length
@@ -15,13 +16,13 @@ class SimpleMACDAgent(Agent):
         
     def on_tick(self, bid, ask, time=None):
         '''Called on every tick update.'''
-        if self.verbose:
-            print('Tick:', bid, ask, time)
-        signal = self.get_signal(bid, ask)
-        self.order_macd(signal)
-        
-    def get_signal(self, bid, ask):
         mid = (bid  + ask) / 2 
+        if self.verbose:
+            print(f'Tick: {mid: .05f}, {time}')
+        signal = self.get_signal(mid)
+        self.order_macd(signal)
+    
+    def get_signal(self, mid):
         self.fast.append(mid)
         self.slow.append(mid)
         slow_mean = np.mean(self.slow)
