@@ -8,7 +8,7 @@ Master: ![Master](https://travis-ci.com/Joearrowsmith/AlgoSoc-Sessions.svg?branc
 ### agent_1_simple_macd.py
 - A simple momentum strategy looking at the cross over of two moving averages.
 
-### agent_2_risk_managed_macd.py
+### agent_2_simple_risk_managed_macd.py
 - A momentum strategy with some risk measures. Inherits the base rules from simple MACD and implements a static stop loss and take profit on top.
 
 ### agent_3_risk_managed_macd.py
