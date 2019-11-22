@@ -54,6 +54,7 @@ Master: ![Master](https://travis-ci.com/Joearrowsmith/AlgoSoc-Sessions.svg?branc
 ### Risk Control:
 1. Time dependent behaviour (e.g. varying behaviour around market open/close)
 2. Real time statistics
+3. Add post-analysis of trades made.
 
 ---
 
