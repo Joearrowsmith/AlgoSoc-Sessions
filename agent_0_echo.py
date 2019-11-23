@@ -5,7 +5,7 @@ class EchoAgent(Agent):
         super().__init__(**kwargs)
         
     def on_tick(self, bid, ask, time=None):
-        print('Tick: {: .05f}, {: .05f}, {}'.format(bid, ask, time))
+        print(f'Tick: {bid: .05f}, {ask: .05f}, {time}')
 
     
     
