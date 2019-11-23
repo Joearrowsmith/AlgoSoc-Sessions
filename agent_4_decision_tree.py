@@ -8,7 +8,7 @@ from pedlar.agent import Agent
 
 class DecisionTreeAgent(Agent):
   """Trades based on decision tree."""
-  name = "appletree"
+  name = "Decision_Tree_Agent"
   def __init__(self, **kwargs):
     self.X_train = list() # stores input data
     self.y_train = list() # stores targets - i.e. buy - sell

@@ -43,7 +43,7 @@ class RiskMACDAgent(SimpleMACDAgent):
         
         mid = (bid  + ask) / 2 
         if self.verbose:
-            print(f'Tick: {mid: .05f}, {time}')
+            print('Tick: {: .05f}, {}'.format(mid, time))
         
         signal = self.get_signal(mid)
         

@@ -8,7 +8,7 @@ class SimpleRiskMACDAgent(SimpleMACDAgent):
     
     def __init__(self, 
                  stop_loss_scaling=1.5,
-                 take_profit_scaling=3.5,
+                 take_profit_scaling=2.0,
                  fast_length=120, slow_length=250, 
                  verbose=False, **kwargs):
         super().__init__(**kwargs)
@@ -42,7 +42,8 @@ class SimpleRiskMACDAgent(SimpleMACDAgent):
         if self.verbose:
             print("New order:", order)
             print("Orders:", self.orders) # Agent orders only
-            print(f"Order detected; take profit: {self.take_profit: .05f}, stop loss: {self.stop_loss: .05f}")
+            print("Order detected; take profit: {: .05f}, stop loss: {: .05f}".format(self.take_profit,
+                                                                                      self.stop_loss))
         
         
     def on_order_close(self, order, profit):
@@ -57,7 +58,7 @@ class SimpleRiskMACDAgent(SimpleMACDAgent):
         mid = (bid  + ask) / 2 
         spread = ask - bid 
         if self.verbose:
-            print(f'Tick: {mid: .05f}, {time}')
+            print('Tick: {: .05f}, {}'.format(mid, time))
         
         signal = self.get_signal(mid)
         
@@ -65,7 +66,7 @@ class SimpleRiskMACDAgent(SimpleMACDAgent):
         
         if new_signal:
             if self.verbose:
-                print(f"New signal: {signal}, {self.last_signal}")
+                print("New signal: {}, {}".format(signal, self.last_signal))
             self.order_macd(signal)
         
         self.tick = {'bid':bid, 'ask':ask,
@@ -80,15 +81,15 @@ class SimpleRiskMACDAgent(SimpleMACDAgent):
             diff = self.tick['bid'] - o.price if o.type == "buy" else o.price - self.tick['ask']
             
             if self.verbose:
-                print(f"Gross profit: {diff: .05f}")
+                print("Gross profit: {: .05f}".format(diff))
             
             if diff > (self.take_profit):
                 if self.verbose:
-                    print(f"Take profit: {diff: .05f} > {self.take_profit: .05f}")
+                    print("Take profit: {: .05f} > {: .05f}".format(diff, self.take_profit))
                 self.close()
             if diff < (self.stop_loss):
                 if self.verbose:
-                    print(f"Stop loss: {diff: .05f} < {self.stop_loss: .05f}")
+                    print("Stop loss: {: .05f} < {: .05f}".format(diff, self.stop_loss))
                 self.close()
     
 def check_if_signal_different_to_last_order_signal(signal, last_order_signal):
