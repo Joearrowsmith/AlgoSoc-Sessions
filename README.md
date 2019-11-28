@@ -1,6 +1,13 @@
 # AlgoSoc-Sessions
 
-Master: ![Master](https://travis-ci.com/Joearrowsmith/AlgoSoc-Sessions.svg?branch=master)
+<p align="center">
+	<img src="https://travis-ci.com/Joearrowsmith/AlgoSoc-Sessions.svg?branch=master"
+     		alt="Build Status">
+	<img src="https://img.shields.io/badge/Python_3.6.3+-orange"
+     		alt="Java Version">
+	<img src="https://img.shields.io/github/repo-size/joearrowsmith/AlgoSoc-Sessions"
+     		alt="Github Repo Size">
+</p>
 
 ### agent_0_echo.py 
 - The simplest possible agent: prints the current bid, ask and time. Works for backtest and real-time data.
