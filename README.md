@@ -21,11 +21,17 @@
 ### agent_3_risk_managed_macd.py
 - A momentum strategy with some risk measures. Inherits the base rules from simple MACD and implements a dynamic stop loss if the asset becomes too volatile.
 
+### agent_4_decision_tree.py
+- An agent that trains a decision tree as it is running to determine how it should trade.
+
 ### build_dataset.py
-- A function to collect your own data using the live datastream from the pedlar server.
+- Collect your own data using the live datastream from the pedlar server.
 
 ### param_optimisation.py
-- A function to determine the expected return from using an agents different parameters.
+- Determine the expected return from using an agents different parameters.
+
+### param_optimisation_tests.py
+- Example tests using the functionality from param_optimisation.py
 
 ### test_agents.py
 - A script to test the code builds when uploaded to github.
