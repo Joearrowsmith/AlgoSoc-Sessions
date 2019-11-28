@@ -53,10 +53,11 @@ class SimpleMACDAgent(Agent):
             
 if __name__ == '__main__':
     backtest = True
+    verbose = True
     if backtest:
-        agent = SimpleMACDAgent(backtest='data/backtest_GBPUSD_12_hours.csv')
+        agent = SimpleMACDAgent(verbose=verbose, backtest='data/backtest_GBPUSD_12_hours.csv')
     else:
-        agent = SimpleMACDAgent(verbose=True,
+        agent = SimpleMACDAgent(verbose=verbose,
                                 username='joe', password='1234',
                                 ticker='tcp://icats.doc.ic.ac.uk:7000',
                                 endpoint='http://icats.doc.ic.ac.uk')

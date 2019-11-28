@@ -1,35 +1,44 @@
-"""Decision Tree agent."""
-from collections import deque
-# Install using pip3 install sklearn
-from sklearn import tree
-
 from pedlar.agent import Agent
+from collections import deque
+from sklearn import tree
 
 
 class DecisionTreeAgent(Agent):
     """Trades based on decision tree."""
     name = "Decision_Tree_Agent"
-    def __init__(self, **kwargs):
+    def __init__(self, horizon=200, fast_length=120, slow_length=250, verbose=False, **kwargs):
+        super().__init__(**kwargs)
+        assert fast_length < slow_length
+        
         self.X_train = list() # stores input data
         self.y_train = list() # stores targets - i.e. buy - sell
+        
         self.tree = tree.DecisionTreeClassifier()
-        self.slow = deque(maxlen=32)
-        self.fast = deque(maxlen=8)
-        self.last_bid = None
-        self.horizon = 0
-        super().__init__(**kwargs) # Must call this
+        
+        self.slow = deque(maxlen=slow_length)
+        self.fast = deque(maxlen=fast_length)
+        self.verbose = verbose
+        
+        self.horizon = horizon
+        self.order_length = 0
+        self.last_mid = None
 
+        
     def on_order(self, order):
-        """On order handler."""
-        print("ORDER:", order)
+        """Called on placing a new order."""
+        if self.verbose:
+            print("New order:", order)
+            print("Orders:", self.orders) # Agent orders only
         fast_avg = sum(self.fast)/len(self.fast)
         slow_avg = sum(self.slow)/len(self.slow)
-        # Store the information made for this order
-        self.X_train.append([fast_avg, slow_avg])
+        self.X_train.append([fast_avg, slow_avg]) # Store the information made for this order
 
+        
     def on_order_close(self, order, profit):
         """On order close handler."""
-        print("PROFIT:", profit)
+        if self.verbose:
+            print("Order closed", order, profit)
+            print("Current balance:", self.balance) # Agent balance only
         # Based on the profit decide what to do
         if profit >= 0:
             if order.type == "buy":
@@ -46,20 +55,26 @@ class DecisionTreeAgent(Agent):
         self.tree.fit(self.X_train, self.y_train)
 
     def on_tick(self, bid, ask, time=None):
-        """On tick handler."""
-        if self.last_bid is None:
-            self.last_bid = bid
+        """Called on every tick update."""
+        mid = (bid  + ask) / 2 
+        if self.verbose:
+            print(f"Tick: {mid: .05f}, {time}")
+        
+        if self.last_mid is None:
+            self.last_mid = mid
             return
+        
         # We take the differences to avoid
         # fixing to a specific price value
-        self.slow.append(bid-self.last_bid)
-        self.fast.append(bid-self.last_bid)
-        self.last_bid = bid
+        self.slow.append(mid-self.last_mid)
+        self.fast.append(mid-self.last_mid)
+        self.last_mid = mid
+        
         # Fill the buffer
         if (len(self.slow) != self.slow.maxlen or
             len(self.fast) != self.fast.maxlen):
-            print("Tick:", bid, ask)
             return
+        
         # Predict
         try:
             out = self.tree.predict([[fast_avg, slow_avg]])[0]
@@ -72,17 +87,18 @@ class DecisionTreeAgent(Agent):
                 self.buy() # We just buy as a starting point
         # Wait for the horizon, at some fixed point in the future
         # we will close the order and see how we did.
-        self.horizon += 1
-        if self.horizon >= 200 and self.orders:
-            self.horizon = 0
+        self.order_length += 1
+        if self.order_length >= self.horizon and self.orders:
+            self.order_length = 0
             self.close()
 
 if __name__ == "__main__":
     backtest = True
+    verbose = True
     if backtest:
-        agent = DecisionTreeAgent(username="joe", password="1234",
+        agent = DecisionTreeAgent(verbose=verbose, backtest="data/backtest_GBPUSD_12_hours.csv")
+    else:
+        agent = DecisionTreeAgent(verbose=verbose, username="joe", password="1234",
                                   ticker="tcp://icats.doc.ic.ac.uk:7000",
                                   endpoint="http://icats.doc.ic.ac.uk")
-    else:
-        agent = DecisionTreeAgent(backtest="data/backtest_GBPUSD_12_hours.csv")
     agent.run()

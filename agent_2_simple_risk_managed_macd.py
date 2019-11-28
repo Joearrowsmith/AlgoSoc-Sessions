@@ -101,11 +101,12 @@ def test_agent_2(backtest='data/backtest_GBPUSD_12_hours.csv', verbose=False):
 
     
 if __name__ == "__main__":
-    backtest = False
+    backtest = True
+    verbose = True
     if backtest:
-        agent = SimpleRiskMACDAgent(backtest='data/backtest_GBPUSD_12_hours.csv')
+        agent = SimpleRiskMACDAgent(verbose=verbose, backtest='data/backtest_GBPUSD_12_hours.csv')
     else:
-        agent = SimpleRiskMACDAgent(verbose=True, 
+        agent = SimpleRiskMACDAgent(verbose=verbose, 
                                     username='joe', password='1234',
                                     ticker='tcp://icats.doc.ic.ac.uk:7000',
                                     endpoint='http://icats.doc.ic.ac.uk')
