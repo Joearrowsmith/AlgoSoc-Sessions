@@ -8,7 +8,7 @@ class SimpleRiskMACDAgent(SimpleMACDAgent):
     
     def __init__(self, 
                  stop_loss_scaling=1.5,
-                 take_profit_scaling=3.5,
+                 take_profit_scaling=2.0,
                  fast_length=120, slow_length=250, 
                  verbose=False, **kwargs):
         super().__init__(**kwargs)
@@ -57,7 +57,7 @@ class SimpleRiskMACDAgent(SimpleMACDAgent):
         mid = (bid  + ask) / 2 
         spread = ask - bid 
         if self.verbose:
-            print(f'Tick: {mid: .05f}, {time}')
+            print(f"Tick: {mid: .05f}, {time}")
         
         signal = self.get_signal(mid)
         
@@ -101,11 +101,12 @@ def test_agent_2(backtest='data/backtest_GBPUSD_12_hours.csv', verbose=False):
 
     
 if __name__ == "__main__":
-    backtest = False
+    backtest = True
+    verbose = True
     if backtest:
-        agent = SimpleRiskMACDAgent(backtest='data/backtest_GBPUSD_12_hours.csv')
+        agent = SimpleRiskMACDAgent(verbose=verbose, backtest='data/backtest_GBPUSD_12_hours.csv')
     else:
-        agent = SimpleRiskMACDAgent(verbose=True, 
+        agent = SimpleRiskMACDAgent(verbose=verbose, 
                                     username='joe', password='1234',
                                     ticker='tcp://icats.doc.ic.ac.uk:7000',
                                     endpoint='http://icats.doc.ic.ac.uk')

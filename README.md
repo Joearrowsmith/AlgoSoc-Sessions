@@ -1,6 +1,13 @@
 # AlgoSoc-Sessions
 
-Master: ![Master](https://travis-ci.com/Joearrowsmith/AlgoSoc-Sessions.svg?branch=master)
+<p align="center">
+	<img src="https://travis-ci.com/Joearrowsmith/AlgoSoc-Sessions.svg?branch=master"
+     		alt="Build Status">
+	<img src="https://img.shields.io/badge/Python_3.6.3+-orange"
+     		alt="Java Version">
+	<img src="https://img.shields.io/github/repo-size/joearrowsmith/AlgoSoc-Sessions"
+     		alt="Github Repo Size">
+</p>
 
 ### agent_0_echo.py 
 - The simplest possible agent: prints the current bid, ask and time. Works for backtest and real-time data.
@@ -14,11 +21,17 @@ Master: ![Master](https://travis-ci.com/Joearrowsmith/AlgoSoc-Sessions.svg?branc
 ### agent_3_risk_managed_macd.py
 - A momentum strategy with some risk measures. Inherits the base rules from simple MACD and implements a dynamic stop loss if the asset becomes too volatile.
 
+### agent_4_decision_tree.py
+- An agent that trains a decision tree as it is running to determine how it should trade.
+
 ### build_dataset.py
-- A function to collect your own data using the live datastream from the pedlar server.
+- Collect your own data using the live datastream from the pedlar server.
 
 ### param_optimisation.py
-- A function to determine the expected return from using an agents different parameters.
+- Determine the expected return from using an agents different parameters.
+
+### param_optimisation_tests.py
+- Example tests using the functionality from param_optimisation.py
 
 ### test_agents.py
 - A script to test the code builds when uploaded to github.

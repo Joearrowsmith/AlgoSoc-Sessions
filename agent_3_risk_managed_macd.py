@@ -43,7 +43,7 @@ class RiskMACDAgent(SimpleMACDAgent):
         
         mid = (bid  + ask) / 2 
         if self.verbose:
-            print(f'Tick: {mid: .05f}, {time}')
+            print(f"Tick: {mid: .05f}, {time}")
         
         signal = self.get_signal(mid)
         
@@ -76,11 +76,12 @@ def test_agent_3(backtest='data/backtest_GBPUSD_12_hours.csv', verbose=False):
 
     
 if __name__ == "__main__":
-    backtest = False
+    backtest = True
+    verbose = True
     if backtest:
-        agent = RiskMACDAgent(backtest='data/backtest_GBPUSD_12_hours.csv')
+        agent = RiskMACDAgent(verbose=verbose, backtest='data/backtest_GBPUSD_12_hours.csv')
     else:
-        agent = RiskMACDAgent(verbose=True, 
+        agent = RiskMACDAgent(verbose=verbose, 
                               username='joe', password='1234',
                               ticker='tcp://icats.doc.ic.ac.uk:7000',
                               endpoint='http://icats.doc.ic.ac.uk')
