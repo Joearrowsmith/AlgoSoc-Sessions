@@ -1,20 +1,18 @@
-from agent_1_simple_macd import SimpleMACDAgent
+from pedlar.agent import Agent
 from collections import deque
 import numpy as np
 
-class SimpleRiskMACDAgent(SimpleMACDAgent):
-    """An improved MACD trading agent with static risk control measures."""
+class SimpleRiskMACDAgent(Agent):
+    """An improved MACD trading agent with a static stop loss and take profit."""
     name = "Simple_Risk_MACD"
     
     def __init__(self, 
-                 stop_loss_scaling=1.5,
-                 take_profit_scaling=2.0,
-                 fast_length=120, slow_length=250, 
+                 stop_loss_scaling,
+                 take_profit_scaling,
+                 fast_length, slow_length, 
                  verbose=False, **kwargs):
         super().__init__(**kwargs)
-        assert fast_length < slow_length
-        assert stop_loss_scaling > 1.0
-        assert take_profit_scaling > 0.0
+        self.init_tests(fast_length, slow_length, stop_loss_scaling, take_profit_scaling)
         
         self.take_profit_scaling = take_profit_scaling
         self.stop_loss_scaling = stop_loss_scaling
@@ -22,23 +20,83 @@ class SimpleRiskMACDAgent(SimpleMACDAgent):
         self.slow = deque(maxlen=slow_length)
         self.verbose = verbose
         
-        self.tick = {'bid':None, 
-                     'ask':None, 
-                     'mid':None,
-                     'spread':None}
-        
-        self.last_order = -1
+        self.last_spread = None
+        self.last_mid = None
         self.last_signal = 0
+        self.last_order = -1
         
         
+    def init_tests(self, fast_length, slow_length, stop_loss_scaling, take_profit_scaling):
+        assert fast_length < slow_length, "Fast length must be less than slow length."
+        assert stop_loss_scaling > 1.0, "Stop scaling must be large than 1 or else it will instantly close positions."
+        assert take_profit_scaling > 0.0, "Take profit must be greater than zero or else it will never make a profit."
+        
+        
+    def on_tick(self, bid, ask, time=None):
+        """Called on every tick update."""
+        mid = (bid  + ask) / 2
+        spread = ask - bid 
+        if self.last_mid is None:
+            self.last_mid = mid
+            self.last_spread = spread
+            return
+        if self.verbose:
+            print(f"Tick: {mid: .05f}, {time}")
+        signal = self.get_signal(mid)
+        
+        is_new_signal = np.sign(signal) != np.sign(self.last_signal)
+        if is_new_signal:
+            if self.verbose:
+                print(f"New signal: {signal}, {self.last_signal}")
+            self.last_signal = self.order_macd(signal)
+        
+        self.check_take_profit_stop_loss(bid, ask)
+        
+        self.last_mid = mid
+        self.last_spread = spread
+    
+    
+    def get_signal(self, mid):
+        ret = mid-self.last_mid
+        self.fast.append(ret)
+        self.slow.append(ret)
+        slow_mean = np.mean(self.slow)
+        fast_mean = np.mean(self.fast)
+        signal = fast_mean - slow_mean
+        return signal
+    
+    
+    def order_macd(self, signal):
+        if signal > 0:
+            self.buy()
+            return 1
+        elif signal < 0:
+            self.sell()
+            return -1
+        return 0
+    
+    
+    def check_take_profit_stop_loss(self, bid, ask):
+        if self.orders:
+            o = self.orders[self.last_order]
+            diff = bid - o.price if o.type == "buy" else o.price - ask
+            if self.verbose:
+                print(f"Gross profit: {diff: .05f}")
+            if diff > (self.take_profit):
+                if self.verbose:
+                    print(f"Take profit: {diff: .05f} > {self.take_profit: .05f}")
+                self.close()
+            if diff < (self.stop_loss):
+                if self.verbose:
+                    print(f"Stop loss: {diff: .05f} < {self.stop_loss: .05f}")
+                self.close()
+    
+    
     def on_order(self, order):
         """Called on placing a new order."""
         self.last_order = order.id
-        self.last_signal = 1 if order.type == "buy" else -1
-        last_spread = self.tick['spread']
-        self.stop_loss = -last_spread * self.stop_loss_scaling
-        self.take_profit = last_spread*self.take_profit_scaling
-        
+        self.stop_loss = -self.last_spread * self.stop_loss_scaling
+        self.take_profit = self.last_spread * self.take_profit_scaling
         if self.verbose:
             print("New order:", order)
             print("Orders:", self.orders) # Agent orders only
@@ -50,54 +108,6 @@ class SimpleRiskMACDAgent(SimpleMACDAgent):
         if self.verbose:
             print("Order closed", order, profit)
             print("Current balance:", self.balance) # Agent balance only
-
-        
-    def on_tick(self, bid, ask, time=None):
-        """Called on every tick update."""
-        mid = (bid  + ask) / 2 
-        spread = ask - bid 
-        if self.verbose:
-            print(f"Tick: {mid: .05f}, {time}")
-        
-        signal = self.get_signal(mid)
-        
-        new_signal = check_if_signal_different_to_last_order_signal(signal, self.last_signal)
-        
-        if new_signal:
-            if self.verbose:
-                print(f"New signal: {signal}, {self.last_signal}")
-            self.order_macd(signal)
-        
-        self.tick = {'bid':bid, 'ask':ask,
-                     'mid':mid, 'spread':spread}
-        
-        self.check_take_profit_stop_loss()
-    
-    
-    def check_take_profit_stop_loss(self):
-        if self.orders:
-            o = self.orders[self.last_order]
-            diff = self.tick['bid'] - o.price if o.type == "buy" else o.price - self.tick['ask']
-            
-            if self.verbose:
-                print(f"Gross profit: {diff: .05f}")
-            
-            if diff > (self.take_profit):
-                if self.verbose:
-                    print(f"Take profit: {diff: .05f} > {self.take_profit: .05f}")
-                self.close()
-            if diff < (self.stop_loss):
-                if self.verbose:
-                    print(f"Stop loss: {diff: .05f} < {self.stop_loss: .05f}")
-                self.close()
-    
-def check_if_signal_different_to_last_order_signal(signal, last_order_signal):
-    return np.sign(signal) != np.sign(last_order_signal)
-    
-        
-def test_agent_2(backtest='data/backtest_GBPUSD_12_hours.csv', verbose=False):
-    agent = SimpleRiskMACDAgent(backtest=backtest, verbose=verbose)
-    agent.run()
 
     
 if __name__ == "__main__":

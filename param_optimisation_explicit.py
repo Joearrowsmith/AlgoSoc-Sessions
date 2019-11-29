@@ -1,4 +1,4 @@
-def optimise_expected_return(Agent, test_cases, verbose=False, sort=False, **kwargs):
+def explicit_search_max_expected_return(Agent, test_cases, verbose=False, sort=False, **kwargs):
     test_balances = []
     test_params = []
     keys, values = test_cases.keys(), list(test_cases.values())
