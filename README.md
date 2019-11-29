@@ -28,7 +28,7 @@
 8. param_optimisation_random.py
    - Determine the expected return from using a random search from an upper and lower bound for each parameter for an agent.
 9. param_optimisation_tests.py
-   - Example tests using the functionality from param_optimisation.py
+   - Example tests using the functionality from param_optimisation_tests.py and param_optimisation_random.py.
 10. test_agents.py
     - A script to test the code builds when uploaded to github.
 
