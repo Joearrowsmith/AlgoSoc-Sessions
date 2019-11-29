@@ -9,40 +9,55 @@ class SimpleMACDAgent(Agent):
                  fast_length=15, slow_length=40, 
                  verbose=False, **kwargs):
         super().__init__(**kwargs)
-        assert fast_length < slow_length
+        self.init_tests(fast_length, slow_length)
         self.fast = deque(maxlen=fast_length)
         self.slow = deque(maxlen=slow_length)
         self.verbose = verbose
+        self.last_mid = None
+        
+        
+    def init_tests(self, fast_length, slow_length):
+        assert fast_length < slow_length, "Fast length must be less than slow length."
+        
         
     def on_tick(self, bid, ask, time=None):
         '''Called on every tick update.'''
         mid = (bid  + ask) / 2 
         if self.verbose:
-            print('Tick: {mid: .05f}, {time}')
+            print(f'Tick: {mid: .05f}, {time}')
+        if self.last_mid is None:
+            self.last_mid = mid
+            return
         signal = self.get_signal(mid)
         self.order_macd(signal)
     
+    
     def get_signal(self, mid):
-        self.fast.append(mid)
-        self.slow.append(mid)
+        ret = mid-self.last_mid
+        self.fast.append(ret)
+        self.slow.append(ret)
         slow_mean = np.mean(self.slow)
         fast_mean = np.mean(self.fast)
         signal = fast_mean - slow_mean
         return signal 
         
+        
     def order_macd(self, signal):
-        if signal == 0:
-            pass
-        elif signal > 0:
+        if signal > 0:
             self.buy()
-        else:
+            return 1
+        elif signal < 0:
             self.sell()
+            return -1
+        return 0
+        
         
     def on_order(self, order):
         '''Called on placing a new order.'''
         if self.verbose:
             print('New order:', order)
             print('Orders:', self.orders) # Agent orders only
+            
             
     def on_order_close(self, order, profit):
         '''Called on closing an order with some profit.'''
