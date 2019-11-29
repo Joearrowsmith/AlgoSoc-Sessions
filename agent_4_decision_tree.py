@@ -8,8 +8,8 @@ from sklearn import tree
 class DecisionTreeAgent(Agent):
     """Trades based on decision tree."""
     name = "Decision_Tree_Agent"
-    def __init__(self, horizon=200, max_depth=5,
-                 fast_length=120, slow_length=250, 
+    def __init__(self, horizon, max_depth,
+                 fast_length, slow_length, 
                  verbose=False, **kwargs):
         super().__init__(**kwargs)
         self.init_tests(fast_length, slow_length, horizon, max_depth)

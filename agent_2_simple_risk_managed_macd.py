@@ -7,9 +7,9 @@ class SimpleRiskMACDAgent(Agent):
     name = "Simple_Risk_MACD"
     
     def __init__(self, 
-                 stop_loss_scaling=1.5,
-                 take_profit_scaling=2.0,
-                 fast_length=120, slow_length=250, 
+                 stop_loss_scaling,
+                 take_profit_scaling,
+                 fast_length, slow_length, 
                  verbose=False, **kwargs):
         super().__init__(**kwargs)
         self.init_tests(fast_length, slow_length, stop_loss_scaling, take_profit_scaling)

@@ -6,7 +6,7 @@ class SimpleMACDAgent(Agent):
     name = "Simple_MACD"
     
     def __init__(self, 
-                 fast_length=15, slow_length=40, 
+                 fast_length, slow_length, 
                  verbose=False, **kwargs):
         super().__init__(**kwargs)
         self.init_tests(fast_length, slow_length)

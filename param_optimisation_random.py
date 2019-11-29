@@ -10,7 +10,12 @@ def random_search_max_expected_return(Agent,
     for n in range(n_steps):
         agent_inputs = {}
         for idx, k in enumerate(keys):
-            k_value = random.randrange(values[idx][0], values[idx][1])
+            if values[idx][2] == int:
+                k_value = random.randrange(values[idx][0], values[idx][1])
+            elif values[idx][2] == float:
+                k_value = random.uniform(values[idx][0], values[idx][1])
+            else:
+                raise NotImplemented(f"Issue with types: {type(values[idx][0])}, {type(values[idx][1])}. {values[idx][2]} not int or float")
             agent_inputs[k] = k_value
         if verbose:
             print(f"{n}) Using {agent_inputs}")
@@ -33,17 +38,17 @@ def random_search_max_expected_return(Agent,
 
 if __name__=='__main__':
     from agent_4_decision_tree import DecisionTreeAgent
-    search_dict = {'horizon' : [5, 500],
-                   'max_depth' : [3, 12],
-                   'fast_length' : [15, 149],
-                   'slow_length' : [20, 500]}
+    search_dict = {'horizon' : [5, 500, int],
+                   'max_depth' : [3, 12, int],
+                   'fast_length' : [15, 149, int],
+                   'slow_length' : [20, 500, int]}
     verbose = True
     #backtest='data/backtest_GBPUSD_12_hours.csv'
     backtest='data/backtest_GBPUSD.csv'
     test_param_balances = random_search_max_expected_return(DecisionTreeAgent, search_dict, 
                                                             10, backtest=backtest, verbose=verbose)
-    optimum_params = test_param_balances[0]
+    local_optimal_params = test_param_balances[0]
     agent = DecisionTreeAgent(verbose=verbose,
                               username='Joe', password='1234',
                               ticker='tcp://icats.doc.ic.ac.uk:7000',
-                              endpoint='http://icats.doc.ic.ac.uk', **optimum_params[0])
+                              endpoint='http://icats.doc.ic.ac.uk', **local_optimal_params[0])

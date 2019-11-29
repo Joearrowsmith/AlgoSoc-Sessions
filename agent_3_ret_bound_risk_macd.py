@@ -9,10 +9,10 @@ class RetBoundRiskMACDAgent(Agent):
     name = "Ret_Bounds_Risk_MACD"
     
     def __init__(self, 
-                 ret_length=100, 
-                 ret_upper_scaling_factor=3.5, 
-                 ret_lower_scaling_factor=3.5,
-                 fast_length=120, slow_length=250, 
+                 ret_length, 
+                 ret_upper_scaling_factor, 
+                 ret_lower_scaling_factor,
+                 fast_length, slow_length, 
                  verbose=False, **kwargs):
         super().__init__(**kwargs)
         self.init_tests(fast_length, slow_length, ret_length, 

@@ -9,35 +9,28 @@
      		alt="Github Repo Size">
 </p>
 
-### agent_0_echo.py 
-- The simplest possible agent: prints the current bid, ask and time. Works for backtest and real-time data.
+## Content
 
-### agent_1_simple_macd.py
-- A simple momentum strategy looking at the cross over of two moving averages of the returns.
-
-### agent_2_simple_risk_managed_macd.py
-- A momentum strategy with some risk measures. Uses the logic from the simple MACD and implements a static stop loss and take profit on top.
-
-### agent_3_ret_bound_risk_macd.py
-- An MACD trading agent with bounded movements of the ret from the mean. This agent tries to detect if underlying asset suddenly moves away from the mean with a larger than expected move.
-
-### agent_4_decision_tree.py
-- An agent that trains a decision tree as it is running to determine how it should trade.
-
-### build_dataset.py
-- Collect your own data using the live datastream from the pedlar server.
-
-### param_optimisation_explicit.py
-- Determine the expected return from using an explicitly defined set of parameters for an agent.
-
-### param_optimisation_random.py
-- Determine the expected return from using a random search from an upper and lower bound for each parameter for an agent.
-
-### param_optimisation_tests.py
-- Example tests using the functionality from param_optimisation.py
-
-### test_agents.py
-- A script to test the code builds when uploaded to github.
+1. agent_0_echo.py 
+   - The simplest possible agent: prints the current bid, ask and time. Works for backtest and real-time data.
+2. agent_1_simple_macd.py
+   - A simple momentum strategy looking at the cross over of two moving averages of the returns.
+3. agent_2_simple_risk_managed_macd.py
+   - A momentum strategy with some risk measures. Uses the logic from the simple MACD and implements a static stop loss and take profit on top.
+4. agent_3_ret_bound_risk_macd.py
+   - An MACD trading agent with bounded movements of the ret from the mean. This agent tries to detect if underlying asset suddenly moves away from the mean with a larger than expected move.
+5. agent_4_decision_tree.py
+   - An agent that trains a decision tree as it is running to determine how it should trade.
+6. build_dataset.py
+   - Collect your own data using the live datastream from the pedlar server.
+7. param_optimisation_explicit.py
+   - Determine the expected return from using an explicitly defined set of parameters for an agent.
+8. param_optimisation_random.py
+   - Determine the expected return from using a random search from an upper and lower bound for each parameter for an agent.
+9. param_optimisation_tests.py
+   - Example tests using the functionality from param_optimisation.py
+10. test_agents.py
+    - A script to test the code builds when uploaded to github.
 
 ---
 
@@ -69,6 +62,7 @@
 - [ ] Grid search
 - [ ] Gradient-based search
 - [ ] Evolution-based search
+- [ ] Sharpe Optimisation
 
 ### Combining multiple signals & agents:
 - [ ] Ensemble of agents
