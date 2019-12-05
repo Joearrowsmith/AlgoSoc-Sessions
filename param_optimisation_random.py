@@ -38,15 +38,14 @@ def random_search_max_expected_return(Agent,
 
 if __name__=='__main__':
     from agent_4_decision_tree import DecisionTreeAgent
-    search_dict = {'horizon' : [5, 500, int],
-                   'max_depth' : [3, 12, int],
-                   'fast_length' : [15, 149, int],
+    search_dict = {'horizon' : [2, 30, int],
+                   'max_depth' : [1, 4, int],
+                   'fast_length' : [10, 149, int],
                    'slow_length' : [20, 500, int]}
     verbose = True
-    #backtest='data/backtest_GBPUSD_12_hours.csv'
-    backtest='data/backtest_GBPUSD.csv'
+    backtest='data/backtest_GBPUSD_12_hours.csv'
     test_param_balances = random_search_max_expected_return(DecisionTreeAgent, search_dict, 
-                                                            10, backtest=backtest, verbose=verbose)
+                                                            200, backtest=backtest, verbose=verbose)
     local_optimal_params = test_param_balances[0]
     agent = DecisionTreeAgent(verbose=verbose,
                               username='Joe', password='1234',

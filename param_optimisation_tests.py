@@ -129,7 +129,7 @@ def expicit_optimise_with_agent_4(backtest='data/backtest_GBPUSD_12_hours.csv',
         test_cases = {'fast_length':[120]*2,
                       'slow_length':[250]*2,
                       'horizon':[200,250],
-                      'max_depth':[3,7]}
+                      'max_depth':[1,3]}
     test_param_balances = explicit_search_max_expected_return(
         DecisionTreeAgent, test_cases,
         backtest=backtest,
@@ -146,7 +146,7 @@ def random_optimise_with_agent_4(backtest='data/backtest_GBPUSD_12_hours.csv',
     search_dict = {'fast_length':[5, 200, int],
                    'slow_length':[150, 300, int],
                    'horizon':[20,500,int],
-                   'max_depth':[1,10,int]}
+                   'max_depth':[1,5,int]}
     test_param_balances = random_search_max_expected_return(
         DecisionTreeAgent, search_dict, n, 
         backtest, verbose, sort

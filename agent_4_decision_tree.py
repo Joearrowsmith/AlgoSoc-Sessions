@@ -30,7 +30,7 @@ class DecisionTreeAgent(Agent):
         
     def init_tests(self, fast_length, slow_length, horizon, max_depth):
         assert fast_length < slow_length, "Fast length must be less than slow length."
-        assert horizon > 2, "Horizon must be greater than 2."
+        assert horizon > 0, "Horizon must be greater than zero."
         assert max_depth > 0, "Must have positive max depth"
         
         
@@ -107,11 +107,19 @@ class DecisionTreeAgent(Agent):
     
 if __name__ == "__main__":
     backtest = True
-    verbose = True
+    verbose = False
     if backtest:
-        agent = DecisionTreeAgent(verbose=verbose, backtest="data/backtest_GBPUSD_12_hours.csv")
+        for i in range(3):
+            agent = DecisionTreeAgent(horizon=3, max_depth=1,
+                                      fast_length=141, slow_length=311,
+                                      verbose=verbose, 
+                                      backtest="data/backtest_GBPUSD_12_hours.csv")
+            agent.run()
     else:
-        agent = DecisionTreeAgent(verbose=verbose, username="joe", password="1234",
+        agent = DecisionTreeAgent(horizon=3, max_depth=2,
+                                  fast_length=141, slow_length=351,
+                                  verbose=verbose, 
+                                  username="joe", password="1234",
                                   ticker="tcp://icats.doc.ic.ac.uk:7000",
                                   endpoint="http://icats.doc.ic.ac.uk")
     agent.run()

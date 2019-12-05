@@ -114,9 +114,16 @@ if __name__ == "__main__":
     backtest = True
     verbose = True
     if backtest:
-        agent = SimpleRiskMACDAgent(verbose=verbose, backtest='data/backtest_GBPUSD_12_hours.csv')
+        agent = SimpleRiskMACDAgent(stop_loss_scaling=2,
+                                    take_profit_scaling=1.5,
+                                    fast_length=120, slow_length=250,
+                                    verbose=verbose, 
+                                    backtest='data/backtest_GBPUSD_12_hours.csv')
     else:
-        agent = SimpleRiskMACDAgent(verbose=verbose, 
+        agent = SimpleRiskMACDAgent(stop_loss_scaling=2,
+                                    take_profit_scaling=1.5,
+                                    fast_length=120, slow_length=250,
+                                    verbose=verbose, 
                                     username='joe', password='1234',
                                     ticker='tcp://icats.doc.ic.ac.uk:7000',
                                     endpoint='http://icats.doc.ic.ac.uk')
