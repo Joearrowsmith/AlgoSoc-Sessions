@@ -112,10 +112,18 @@ if __name__ == "__main__":
     backtest = True
     verbose = False
     if backtest:
-        agent = RetBoundRiskMACDAgent(verbose=verbose, 
+        agent = RetBoundRiskMACDAgent(ret_length=100, 
+                                      ret_upper_scaling_factor=1.2, 
+                                      ret_lower_scaling_factor=3.0,
+                                      fast_length=120, slow_length=250,
+                                      verbose=verbose, 
                                       backtest='data/backtest_GBPUSD_12_hours.csv')
     else:
-        agent = RetBoundRiskMACDAgent(verbose=verbose,
+        agent = RetBoundRiskMACDAgent(ret_length=100, 
+                                      ret_upper_scaling_factor=1.2, 
+                                      ret_lower_scaling_factor=3.0,
+                                      fast_length=100, slow_length=250,
+                                      verbose=verbose,
                                       username='joe', password='1234',
                                       ticker='tcp://icats.doc.ic.ac.uk:7000',
                                       endpoint='http://icats.doc.ic.ac.uk')
