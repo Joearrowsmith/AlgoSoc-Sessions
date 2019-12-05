@@ -7,13 +7,15 @@ class SimpleMACDAgent(Agent):
     
     def __init__(self, 
                  fast_length, slow_length, 
-                 verbose=False, **kwargs):
+                 verbose=False, make_order=True, **kwargs):
         super().__init__(**kwargs)
         self.init_tests(fast_length, slow_length)
         self.fast = deque(maxlen=fast_length)
         self.slow = deque(maxlen=slow_length)
         self.verbose = verbose
         self.last_mid = None
+        self.make_order = make_order
+        print("made macd")
         
         
     def init_tests(self, fast_length, slow_length):
@@ -29,7 +31,9 @@ class SimpleMACDAgent(Agent):
             self.last_mid = mid
             return
         signal = self.get_signal(mid)
-        self.order_macd(signal)
+        if self.make_order:
+            self.order_macd(signal)
+        return signal
     
     
     def get_signal(self, mid):

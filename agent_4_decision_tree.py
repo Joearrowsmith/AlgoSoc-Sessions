@@ -10,7 +10,7 @@ class DecisionTreeAgent(Agent):
     name = "Decision_Tree_Agent"
     def __init__(self, horizon, max_depth,
                  fast_length, slow_length, 
-                 verbose=False, **kwargs):
+                 verbose=False, make_order=True, **kwargs):
         super().__init__(**kwargs)
         self.init_tests(fast_length, slow_length, horizon, max_depth)
         
@@ -26,6 +26,8 @@ class DecisionTreeAgent(Agent):
         self.horizon = horizon
         self.order_length = 0
         self.last_mid = None
+        self.make_order = make_order
+        self.fast_avg, self.slow_avg = None, None
 
         
     def init_tests(self, fast_length, slow_length, horizon, max_depth):
@@ -56,23 +58,35 @@ class DecisionTreeAgent(Agent):
             len(self.fast) != self.fast.maxlen):
             return
         
+        signal = self.get_signal(self.fast_avg, self.slow_avg)
+        if self.make_order:
+            self.make_order(signal)
+        return signal
+
+    
+    def get_signal(self, fast_avg, slow_avg):
+        signal = 0
         # Predict
         try:
-            out = self.tree.predict([[fast_avg, slow_avg]])[0]
-            if out == 1:
-                self.buy()
-            else:
-                self.sell()
+            signal = self.tree.predict([[fast_avg, slow_avg]])[0]
         except: # The tree is not fitted yet
             if not self.orders:
-                self.buy() # We just buy as a starting point
+                signal = 1 # We just buy as a starting point
         # Wait for the horizon, at some fixed point in the future
         # we will close the order and see how we did.
         self.order_length += 1
         if self.order_length >= self.horizon and self.orders:
             self.order_length = 0
-            self.close()
-
+            signal = 0
+        return signal 
+        
+        
+    def make_order(self, signal):
+        if signal == 1:
+            self.buy()
+        else:
+            self.sell()
+        
             
     def on_order(self, order):
         """Called on placing a new order."""
@@ -81,7 +95,7 @@ class DecisionTreeAgent(Agent):
             print("Orders:", self.orders) # Agent orders only
         fast_avg = sum(self.fast)/len(self.fast)
         slow_avg = sum(self.slow)/len(self.slow)
-        self.X_train.append([fast_avg, slow_avg]) # Store the information made for this order
+        self.X_train.append([self.fast_avg, self.slow_avg]) # Store the information made for this order
 
         
     def on_order_close(self, order, profit):
