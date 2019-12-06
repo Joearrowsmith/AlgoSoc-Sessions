@@ -66,7 +66,7 @@ class RetBoundRiskMACDAgent(Agent):
         if is_new_signal:
             if self.verbose:
                 print(f"New signal: {signal}, {self.last_signal}")
-            self.last_signal = self.order_macd(signal)  
+            self.last_signal = self.order_macd(signal)
             self.ret_bound['upper'] = rets_std * self.ret_scaling_factor['upper'] + rets_mean
             self.ret_bound['lower'] = -1 * rets_std * self.ret_scaling_factor['lower'] + rets_mean
 

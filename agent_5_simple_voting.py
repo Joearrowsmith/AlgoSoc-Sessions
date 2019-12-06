@@ -5,7 +5,7 @@ import numpy as np
 
 class SimpleVotingAgent(Agent):
     name = "Mean_voting_agent"
-    
+
     def __init__(self, agents_list, agents_params, agents_require_pos_func,
                  rets_length, verbose=False, **kwargs):
         super().__init__(**kwargs)
