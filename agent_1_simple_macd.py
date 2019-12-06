@@ -2,11 +2,12 @@ from pedlar.agent import Agent
 from collections import deque
 import numpy as np
 
+
 class SimpleMACDAgent(Agent):
     name = "Simple_MACD"
-    
-    def __init__(self, 
-                 fast_length, slow_length, 
+
+    def __init__(self,
+                 fast_length, slow_length,
                  verbose=False, make_order=True, **kwargs):
         super().__init__(**kwargs)
         self.init_tests(fast_length, slow_length)
@@ -15,16 +16,13 @@ class SimpleMACDAgent(Agent):
         self.verbose = verbose
         self.last_mid = None
         self.make_order = make_order
-        print("made macd")
-        
-        
+
     def init_tests(self, fast_length, slow_length):
         assert fast_length < slow_length, "Fast length must be less than slow length."
-        
-        
+
     def on_tick(self, bid, ask, time=None):
         '''Called on every tick update.'''
-        mid = (bid  + ask) / 2 
+        mid = (bid + ask) / 2
         if self.verbose:
             print(f'Tick: {mid: .05f}, {time}')
         if self.last_mid is None:
@@ -32,10 +30,9 @@ class SimpleMACDAgent(Agent):
             return
         signal = self.get_signal(mid)
         if self.make_order:
-            self.order_macd(signal)
+            self.order(signal)
         return signal
-    
-    
+
     def get_signal(self, mid):
         ret = mid-self.last_mid
         self.fast.append(ret)
@@ -43,10 +40,9 @@ class SimpleMACDAgent(Agent):
         slow_mean = np.mean(self.slow)
         fast_mean = np.mean(self.fast)
         signal = fast_mean - slow_mean
-        return signal 
-        
-        
-    def order_macd(self, signal):
+        return signal
+
+    def order(self, signal):
         if signal > 0:
             self.buy()
             return 1
@@ -54,22 +50,20 @@ class SimpleMACDAgent(Agent):
             self.sell()
             return -1
         return 0
-        
-        
+
     def on_order(self, order):
         '''Called on placing a new order.'''
         if self.verbose:
             print('New order:', order)
-            print('Orders:', self.orders) # Agent orders only
-            
-            
+            print('Orders:', self.orders)  # Agent orders only
+
     def on_order_close(self, order, profit):
         '''Called on closing an order with some profit.'''
         if self.verbose:
             print('Order closed', order, profit)
-            print('Current balance:', self.balance) # Agent balance only
-            
-            
+            print('Current balance:', self.balance)  # Agent balance only
+
+
 if __name__ == '__main__':
     backtest = True
     verbose = True

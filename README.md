@@ -66,6 +66,9 @@
 
 ### Combining multiple signals & agents:
 - [ ] Ensemble of agents
+      - [ ] Convert old agents into the new signal and order style
+            - [ ] Determine logic for take profit and similar operations
+      - [ ] Add train orders, orders that don't excute but enable a model to train / be fed into an ensemble model
 - [ ] K-Armed bandits
 
 ### Risk Control:
