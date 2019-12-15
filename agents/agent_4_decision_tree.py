@@ -54,7 +54,7 @@ class DecisionTreeAgent(Agent):
 
         # Fill the buffer
         if (len(self.slow) != self.slow.maxlen or
-            len(self.fast) != self.fast.maxlen):
+                len(self.fast) != self.fast.maxlen):
             return
 
         signal = self.get_signal(self.fast_avg, self.slow_avg)
@@ -123,7 +123,7 @@ if __name__ == "__main__":
         agent = DecisionTreeAgent(horizon=3, max_depth=1,
                                   fast_length=141, slow_length=311,
                                   verbose=verbose,
-                                  backtest="data/backtest_GBPUSD_12_hours.csv")
+                                  backtest="../data/backtest_GBPUSD_12_hours.csv")
     else:
         agent = DecisionTreeAgent(horizon=3, max_depth=2,
                                   fast_length=141, slow_length=351,

@@ -38,10 +38,14 @@ class RetBoundRiskMACDAgent(Agent):
 
     def init_tests(self, fast_length, slow_length, ret_length,
                    ret_upper_scaling_factor, ret_lower_scaling_factor):
-        assert fast_length < slow_length, "Fast length must be less than slow length."
-        assert ret_length > 3, "Ret length must be at least 3 otherwise array is too small."
-        assert ret_upper_scaling_factor > 0, "Ret upper scaling factor must be a positive decimal."
-        assert ret_lower_scaling_factor > 0, "Ret lower scaling factor must be a positive decimal."
+        assert fast_length < slow_length, "Fast length must be \
+            less than slow length."
+        assert ret_length > 3, "Ret length must be at \
+            least 3 otherwise array is too small."
+        assert ret_upper_scaling_factor > 0, "Ret upper scaling factor must be \
+            a positive decimal."
+        assert ret_lower_scaling_factor > 0, "Ret lower scaling factor must be \
+            a positive decimal."
 
     def on_tick(self, bid, ask, time=None):
         """Called on every tick update."""
@@ -114,7 +118,7 @@ if __name__ == "__main__":
                                       ret_lower_scaling_factor=3.0,
                                       fast_length=120, slow_length=250,
                                       verbose=verbose,
-                                      backtest='data/backtest_GBPUSD_12_hours.csv')
+                                      backtest='../data/backtest_GBPUSD_12_hours.csv')
     else:
         agent = RetBoundRiskMACDAgent(ret_length=100,
                                       ret_upper_scaling_factor=1.2,

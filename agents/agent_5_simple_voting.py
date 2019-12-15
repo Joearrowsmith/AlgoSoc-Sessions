@@ -26,7 +26,7 @@ class SimpleVotingAgent(Agent):
         num_agents = len(agents_list)
         num_params = len(agents_params)
         num_pos_func_bool = len(agents_require_pos_func)
-        assert num_agents == num_params == num_pos_func_bool, f'{num_agents}!={num_params}!={num_pos_func_bool}'
+        assert (num_agents == num_params == num_pos_func_bool), f'{num_agents}!={num_params}!={num_pos_func_bool}'
 
     def on_tick(self, bid, ask, time=None):
         mid = (bid + ask) / 2
@@ -78,7 +78,7 @@ if __name__ == '__main__':
     if backtest:
         agent = SimpleVotingAgent(agents_list,  agents_params,
                                   agents_require_pos_func, 100,
-                                  backtest='data/backtest_GBPUSD_12_hours.csv')
+                                  backtest='../data/backtest_GBPUSD_12_hours.csv')
     else:
         agent = SimpleVotingAgent(agents_list, agents_params,
                                   agents_require_pos_func, 100,

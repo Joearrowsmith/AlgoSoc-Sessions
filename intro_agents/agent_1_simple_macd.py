@@ -8,17 +8,18 @@ class SimpleMACDAgent(Agent):
 
     def __init__(self,
                  fast_length, slow_length,
-                 verbose=False, make_order=True, **kwargs):
+                 verbose=False, **kwargs):
         super().__init__(**kwargs)
         self.init_tests(fast_length, slow_length)
         self.fast = deque(maxlen=fast_length)
         self.slow = deque(maxlen=slow_length)
-        self.verbose = verbose
+        self.verbose = verbose  # Controls if the agent should print output.
         self.last_mid = None
-        self.make_order = make_order
 
     def init_tests(self, fast_length, slow_length):
-        assert fast_length < slow_length, "Fast length must be less than slow length."
+        '''Basic checks to ensure the agent is used correctly.'''
+        assert fast_length < slow_length, "Fast length must be \
+            less than slow length."
 
     def on_tick(self, bid, ask, time=None):
         '''Called on every tick update.'''
@@ -29,11 +30,10 @@ class SimpleMACDAgent(Agent):
             self.last_mid = mid
             return
         signal = self.get_signal(mid)
-        if self.make_order:
-            self.order(signal)
-        return signal
+        self.order_macd(signal)
 
     def get_signal(self, mid):
+        '''Returns the signal from a macd technical indicator.'''
         ret = mid-self.last_mid
         self.fast.append(ret)
         self.slow.append(ret)
@@ -42,14 +42,12 @@ class SimpleMACDAgent(Agent):
         signal = fast_mean - slow_mean
         return signal
 
-    def order(self, signal):
+    def order_macd(self, signal):
+        '''Makes orders based on the signal.'''
         if signal > 0:
             self.buy()
-            return 1
         elif signal < 0:
             self.sell()
-            return -1
-        return 0
 
     def on_order(self, order):
         '''Called on placing a new order.'''
@@ -68,8 +66,10 @@ if __name__ == '__main__':
     backtest = True
     verbose = True
     if backtest:
+        # parameters are fed into the agent whilst initialing the agent.
         agent = SimpleMACDAgent(fast_length=120, slow_length=250,
-                                verbose=verbose, backtest='data/backtest_GBPUSD_12_hours.csv')
+                                verbose=verbose,
+                                backtest='../data/backtest_GBPUSD_12_hours.csv')
     else:
         agent = SimpleMACDAgent(fast_length=120, slow_length=250,
                                 verbose=verbose,
