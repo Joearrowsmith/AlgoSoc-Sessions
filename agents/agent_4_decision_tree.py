@@ -1,4 +1,8 @@
-# Code adapted from https://github.com/nuric
+'''
+Code adapted from https://github.com/nuric
+An agent that trains a decision tree
+as it is running to determine how it should trade.
+'''
 
 from pedlar.agent import Agent
 from collections import deque
@@ -6,7 +10,6 @@ from sklearn import tree
 
 
 class DecisionTreeAgent(Agent):
-    """Trades based on decision tree."""
     name = "Decision_Tree_Agent"
 
     def __init__(self, horizon, max_depth,
@@ -31,7 +34,8 @@ class DecisionTreeAgent(Agent):
         self.fast_avg, self.slow_avg = None, None
 
     def init_tests(self, fast_length, slow_length, horizon, max_depth):
-        assert fast_length < slow_length, "Fast length must be less than slow length."
+        assert fast_length < slow_length, "Fast length must be \
+                                           less than slow length."
         assert horizon > 0, "Horizon must be greater than zero."
         assert max_depth > 0, "Must have positive max depth"
 

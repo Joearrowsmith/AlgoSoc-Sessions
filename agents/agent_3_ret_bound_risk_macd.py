@@ -1,13 +1,15 @@
+'''
+An MACD trading agent with bounded movements of the ret from the mean.
+- This agent tries to detect if underlying asset suddenly moves away from
+  the mean with a larger than expected move.
+'''
+
 from pedlar.agent import Agent
 from collections import deque
 import numpy as np
 
 
 class RetBoundRiskMACDAgent(Agent):
-    """An MACD trading agent with bounded movements of the ret from the mean.
-     - This agent tries to detect if underlying asset suddenly moves away from
-       the mean with a larger than expected move.
-    """
     name = "Ret_Bounds_Risk_MACD"
 
     def __init__(self,

@@ -1,3 +1,7 @@
+'''
+Collect your own data using the live datastream from the pedlar server.
+'''
+
 from pedlar.agent import Agent
 import csv
 

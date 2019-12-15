@@ -1,3 +1,9 @@
+'''
+A momentum strategy with some risk measures.
+Uses the signal from the simple MACD and implements
+a static stop loss and take profit on top.
+'''
+
 from pedlar.agent import Agent
 from signal import Signal
 from collections import deque
@@ -5,8 +11,6 @@ import numpy as np
 
 
 class SimpleRiskMACDAgent(Agent):
-    """An improved MACD trading agent with a \
-        static stop loss and take profit."""
     name = "Simple_Risk_MACD"
 
     def __init__(self,

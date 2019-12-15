@@ -1,4 +1,12 @@
-def explicit_search_max_expected_return(Agent, test_cases, verbose=False, sort=False, **kwargs):
+'''
+Determine the expected return from using an explicitly
+defined set of parameters for an agent.
+'''
+
+
+def explicit_search_max_expected_return(Agent, test_cases,
+                                        verbose=False, sort=False,
+                                        **kwargs):
     test_balances = []
     test_params = []
     keys, values = test_cases.keys(), list(test_cases.values())
@@ -15,17 +23,19 @@ def explicit_search_max_expected_return(Agent, test_cases, verbose=False, sort=F
         test_balances.append(bal)
     test_param_balances = list(zip(test_params, test_balances))
     if sort:
-        test_param_balances = reversed(sorted(test_param_balances, key = lambda i: i[1]))
+        test_param_balances = reversed(sorted(test_param_balances,
+                                              key=lambda i: i[1]))
     return test_param_balances
-    
+
 
 def check_sublists_same_size(test_list):
     if type(test_list) is not list:
         raise TypeError(f'Not a list: {type(test_list)}')
     len_first = len(test_list[0])
-    assert all(len(i) == len_first for i in test_list), 'Sublists not of same size'
+    assert all(len(i) == len_first for i in test_list), 'Sublists \
+                                                         not of same size'
 
-    
+
 def print_optimisation_outputs(test_param_balances):
     print("Outputs from optimisation:")
     for idx, test in enumerate(test_param_balances):

@@ -2,6 +2,7 @@ from pedlar.agent import Agent
 
 
 class EchoAgent(Agent):
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)  # initialise the parent Agent class
 

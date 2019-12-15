@@ -1,13 +1,13 @@
 '''
-The simplest possible agent: prints the current bid, ask and time. 
+The simplest possible agent: prints the current bid, ask and time.
 Works for backtest and real-time data.
 '''
-
 
 from pedlar.agent import Agent
 
 
 class EchoAgent(Agent):
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
