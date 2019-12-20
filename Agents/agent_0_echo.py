@@ -18,6 +18,8 @@ class EchoAgent(Agent):
 if __name__ == '__main__':
     backtest = True
     if backtest:
+        from util import check_if_in_agents
+        check_if_in_agents()
         agent = EchoAgent(backtest='../data/backtest_GBPUSD_12_hours.csv')
     else:
         agent = EchoAgent(username='joe', password='1234',

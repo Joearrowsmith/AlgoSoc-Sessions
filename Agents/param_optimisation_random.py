@@ -44,7 +44,7 @@ def random_search_max_expected_return(Agent,
 
 
 if __name__ == '__main__':
-    from agent_4_decision_tree import DecisionTreeAgent
+    from Agents.agent_4_decision_tree import DecisionTreeAgent
     search_dict = {'horizon': [2, 30, int],
                    'max_depth': [1, 4, int],
                    'fast_length': [10, 149, int],

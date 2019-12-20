@@ -5,7 +5,7 @@ a static stop loss and take profit on top.
 '''
 
 from pedlar.agent import Agent
-from signal import Signal
+from Agents.signal import Signal
 from collections import deque
 import numpy as np
 
@@ -37,12 +37,9 @@ class SimpleRiskMACDAgent(Agent):
 
     def init_tests(self, fast_length, slow_length,
                    stop_loss_scaling, take_profit_scaling):
-        assert fast_length < slow_length, "Fast length must be \
-            less than slow length."
-        assert stop_loss_scaling > 1.0, "Stop scaling must be \
-            large than 1 or else it will instantly close positions."
-        assert take_profit_scaling > 0.0, "Take profit must be \
-            greater than zero or else it will never make a profit."
+        assert fast_length < slow_length, "Fast length must be less than slow length."
+        assert stop_loss_scaling > 1.0, "Stop scaling must be large than 1 or else it will instantly close positions."
+        assert take_profit_scaling > 0.0, "Take profit must be greater than zero or else it will never make a profit."
 
     def on_tick(self, bid, ask, time=None):
         """Called on every tick update."""
@@ -55,18 +52,20 @@ class SimpleRiskMACDAgent(Agent):
         if self.verbose:
             print(f'Tick: {mid: .05f}, {time}')
 
-        signal = self.get_signal(mid)
+        signal = self.set_macd_signal(mid)
+
         is_new_signal = np.sign(signal) != np.sign(self.last_signal)
         if is_new_signal:
             if self.verbose:
                 print(f"New signal: {signal}, {self.last_signal}")
-            self.last_signal = self.order(signal)
+            self.order(signal)
         else:
-            signal = 0
+            signal = 0.
 
         self.check_take_profit_stop_loss(bid, ask)
         self.last_mid = mid
         self.last_spread = spread
+        self.last_signal = signal
 
     def set_macd_signal(self, mid):
         ret = mid-self.last_mid
@@ -75,16 +74,13 @@ class SimpleRiskMACDAgent(Agent):
         slow_mean = np.mean(self.slow)
         fast_mean = np.mean(self.fast)
         signal = fast_mean - slow_mean
-        self.signal.set_signal_value(signal)
+        return signal
 
     def order(self, signal):
         if signal > 0:
             self.buy()
-            return 1
         elif signal < 0:
             self.sell()
-            return -1
-        return 0
 
     def check_take_profit_stop_loss(self, bid, ask):
         if self.orders:
@@ -112,9 +108,7 @@ class SimpleRiskMACDAgent(Agent):
         if self.verbose:
             print("New order:", order)
             print("Orders:", self.orders)  # Agent orders only
-            print(f"Order detected; \
-                take profit: {self.take_profit: .05f}, \
-                stop loss: {self.stop_loss: .05f}")
+            print(f"Order detected; take profit: {self.take_profit: .05f}, stop loss: {self.stop_loss: .05f}")
 
     def on_order_update(self):
         self.stop_loss = -self.last_spread * self.stop_loss_scaling
@@ -126,41 +120,42 @@ class SimpleRiskMACDAgent(Agent):
             print("Order closed", order, profit)
             print("Current balance:", self.balance)  # Agent balance only
 
-    def buy(self):
-        '''Overloading the Agent.buy function to add our signal update'''
-        if self.make_order:
-            super().buy()
-        self.signal.open("buy")
+    # def buy(self):
+    #     '''Overloading the Agent.buy function to add our signal update'''
+    #     if self.make_order:
+    #         super().buy()
+    #     self.signal.open("buy")
 
-    def sell(self):
-        '''Overloading the Agent.sell function to add our signal update'''
-        if self.make_order:
-            super().sell()
-        self.signal.open("sell")
+    # def sell(self):
+    #     '''Overloading the Agent.sell function to add our signal update'''
+    #     if self.make_order:
+    #         super().sell()
+    #     self.signal.open("sell")
 
-    def close(self):
-        '''Overloading the Agent.close function to add our signal update'''
-        if self.make_order:
-            super().close()
-        self.signal.close()
+    # def close(self):
+    #     '''Overloading the Agent.close function to add our signal update'''
+    #     if self.make_order:
+    #         super().close()
+    #     self.signal.close()
 
 
-if __name__ == "__main__":
-    backtest = True
-    verbose = True
-    if backtest:
-        agent = SimpleRiskMACDAgent(stop_loss_scaling=2,
-                                    take_profit_scaling=1.5,
-                                    fast_length=120, slow_length=250,
-                                    verbose=verbose,
-                                    backtest='../data/\
-                                        backtest_GBPUSD_12_hours.csv')
-    else:
-        agent = SimpleRiskMACDAgent(stop_loss_scaling=2,
-                                    take_profit_scaling=1.5,
-                                    fast_length=120, slow_length=250,
+def main(stop_loss_scaling=2, take_profit_scaling=1.5,
+         fast_length=120, slow_length=250,
+         backtest=None, verbose=True):
+    if backtest is None:
+        agent = SimpleRiskMACDAgent(stop_loss_scaling=stop_loss_scaling,
+                                    take_profit_scaling=take_profit_scaling,
+                                    fast_length=fast_length,
+                                    slow_length=slow_length,
                                     verbose=verbose,
                                     username='joe', password='1234',
                                     ticker='tcp://icats.doc.ic.ac.uk:7000',
                                     endpoint='http://icats.doc.ic.ac.uk')
+    else:
+        agent = SimpleRiskMACDAgent(stop_loss_scaling=stop_loss_scaling,
+                                    take_profit_scaling=take_profit_scaling,
+                                    fast_length=fast_length,
+                                    slow_length=slow_length,
+                                    verbose=verbose,
+                                    backtest=backtest)
     agent.run()

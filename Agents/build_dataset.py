@@ -24,6 +24,8 @@ class BuildDatasetAgent(Agent):
 
 
 if __name__ == '__main__':
+    from util import check_if_in_agents
+    check_if_in_agents()
     agent = BuildDatasetAgent(file_name='../data/GBPUSD_new_dataset.csv',
                               username='joe', password='1234',
                               ticker='tcp://icats.doc.ic.ac.uk:7000',

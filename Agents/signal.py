@@ -4,6 +4,7 @@ class Signal:
                  single_order=True):
         self.test_signal(order_open, order_type, single_order)
         self.order_open = order_open
+        self.last_order_type = None
         self.order_type = order_type
         self.value = signal_value
         self.single_order = single_order
@@ -26,6 +27,12 @@ class Signal:
     def set_signal_value(self, signal_value):
         self.value = signal_value
 
+    def get_order_signal(self):
+        if self.order_open:
+            return self.value
+        else:
+            return 0
+
     def close(self, signal_value=None):
         if signal_value is not None:
             self.set_signal_value(signal_value)
@@ -38,6 +45,7 @@ class Signal:
         if signal_value is not None:
             self.set_signal_value(signal_value)
         self.order_open = True
+        self.last_order_type = self.order_type
         self.order_type = order_type
 
     def check_if_new_order(self, order_type):

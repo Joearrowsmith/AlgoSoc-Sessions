@@ -5,6 +5,7 @@ An MACD trading agent with bounded movements of the ret from the mean.
 '''
 
 from pedlar.agent import Agent
+from Agents.signal import Signal
 from collections import deque
 import numpy as np
 
@@ -17,7 +18,7 @@ class RetBoundRiskMACDAgent(Agent):
                  ret_upper_scaling_factor,
                  ret_lower_scaling_factor,
                  fast_length, slow_length,
-                 verbose=False, **kwargs):
+                 verbose=False, make_order=True, **kwargs):
         super().__init__(**kwargs)
         self.init_tests(fast_length, slow_length, ret_length,
                         ret_upper_scaling_factor, ret_lower_scaling_factor)
@@ -34,6 +35,8 @@ class RetBoundRiskMACDAgent(Agent):
         self.fast = deque(maxlen=fast_length)
         self.slow = deque(maxlen=slow_length)
         self.verbose = verbose
+        self.make_order = make_order
+        self.signal = Signal(False, None, None)
 
         self.last_mid = None
         self.last_signal = 0
@@ -88,15 +91,10 @@ class RetBoundRiskMACDAgent(Agent):
         return signal
 
     def order_macd(self, signal):
-        if signal == 0:
-            pass
-        elif signal > 0:
+        if signal > 0:
             self.buy()
-            return 1
-        else:
+        elif signal < 1:
             self.sell()
-            return -1
-        return 0
 
     def on_order(self, order):
         """Called on placing a new order."""
@@ -110,11 +108,30 @@ class RetBoundRiskMACDAgent(Agent):
             print("Order closed", order, profit)
             print("Current balance:", self.balance)  # Agent balance only
 
+    # def buy(self):
+    #     '''Overloading the Agent.buy function to add our signal update'''
+    #     if self.make_order:
+    #         super().buy()
+    #     self.signal.open("buy")
+
+    # def sell(self):
+    #     '''Overloading the Agent.sell function to add our signal update'''
+    #     if self.make_order:
+    #         super().sell()
+    #     self.signal.open("sell")
+
+    # def close(self):
+    #     '''Overloading the Agent.close function to add our signal update'''
+    #     if self.make_order:
+    #         super().close()
+    #     self.signal.close()
 
 if __name__ == "__main__":
     backtest = True
     verbose = False
     if backtest:
+        from util import check_if_in_agents
+        check_if_in_agents()
         agent = RetBoundRiskMACDAgent(ret_length=100,
                                       ret_upper_scaling_factor=1.2,
                                       ret_lower_scaling_factor=3.0,

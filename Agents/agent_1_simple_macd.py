@@ -4,7 +4,7 @@
 '''
 
 from pedlar.agent import Agent
-from signal import Signal
+from Agents.signal import Signal
 from collections import deque
 import numpy as np
 
@@ -25,8 +25,7 @@ class SimpleMACDAgent(Agent):
         self.signal = Signal(False, None, None)
 
     def init_tests(self, fast_length, slow_length):
-        assert fast_length < slow_length, "Fast length \
-            must be less than slow length."
+        assert fast_length < slow_length, "Fast length must be less than slow length."
 
     def on_tick(self, bid, ask, time=None):
         '''Called on every tick update.'''
@@ -80,17 +79,17 @@ class SimpleMACDAgent(Agent):
         self.signal.open("sell")
 
 
-if __name__ == '__main__':
-    backtest = True
-    verbose = True
-    if backtest:
-        agent = SimpleMACDAgent(fast_length=120, slow_length=250,
-                                verbose=verbose,
-                                backtest='../data/backtest_GBPUSD_12_hours.csv')
-    else:
-        agent = SimpleMACDAgent(fast_length=120, slow_length=250,
+def main(fast_length=120, slow_length=250, backtest=None, verbose=True):
+    if backtest is None:
+        agent = SimpleMACDAgent(fast_length=fast_length,
+                                slow_length=slow_length,
                                 verbose=verbose,
                                 username='joe', password='1234',
                                 ticker='tcp://icats.doc.ic.ac.uk:7000',
                                 endpoint='http://icats.doc.ic.ac.uk')
+    else:
+        agent = SimpleMACDAgent(fast_length=fast_length,
+                                slow_length=slow_length,
+                                verbose=verbose,
+                                backtest=backtest)
     agent.run()

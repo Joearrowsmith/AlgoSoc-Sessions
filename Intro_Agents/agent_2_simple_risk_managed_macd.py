@@ -48,6 +48,7 @@ class SimpleRiskMACDAgent(Agent):
         if self.verbose:
             print(f"Tick: {mid: .05f}, {time}")
         signal = self.get_signal(mid)
+
         is_new_signal = np.sign(signal) != np.sign(self.last_signal)
         if is_new_signal:
             if self.verbose:

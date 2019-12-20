@@ -124,6 +124,8 @@ if __name__ == "__main__":
     backtest = True
     verbose = False
     if backtest:
+        from util import check_if_in_agents
+        check_if_in_agents()
         agent = DecisionTreeAgent(horizon=3, max_depth=1,
                                   fast_length=141, slow_length=311,
                                   verbose=verbose,
