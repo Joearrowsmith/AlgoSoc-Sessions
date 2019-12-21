@@ -8,8 +8,8 @@ from collections import deque
 import numpy as np
 
 
-class SimpleVotingAgent(Agent):
-    name = "Mean_voting_agent"
+class SimpleSingalVotingAgent(Agent):
+    name = "Mean_singal_voting_agent"
 
     def __init__(self, agents_list, agents_params, agents_require_pos_func,
                  rets_length, make_order=True, verbose=False, **kwargs):
@@ -111,15 +111,15 @@ if __name__ == '__main__':
     if backtest:
         from util import check_if_in_agents
         check_if_in_agents()
-        agent = SimpleVotingAgent(agents_list,  agents_params,
-                                  agents_require_pos_func,
-                                  rets_length=100,
-                                  backtest='../data/backtest_GBPUSD_12_hours.csv')
+        agent = SimpleSingalVotingAgent(agents_list,  agents_params,
+                                        agents_require_pos_func,
+                                        rets_length=100,
+                                        backtest='../data/backtest_GBPUSD_12_hours.csv')
     else:
-        agent = SimpleVotingAgent(agents_list, agents_params,
-                                  agents_require_pos_func,
-                                  rets_length=100,
-                                  username='joe', password='1234',
-                                  ticker='tcp://icats.doc.ic.ac.uk:7000',
-                                  endpoint='http://icats.doc.ic.ac.uk')
+        agent = SimpleSingalVotingAgent(agents_list, agents_params,
+                                        agents_require_pos_func,
+                                        rets_length=100,
+                                        username='joe', password='1234',
+                                        ticker='tcp://icats.doc.ic.ac.uk:7000',
+                                        endpoint='http://icats.doc.ic.ac.uk')
     agent.run()

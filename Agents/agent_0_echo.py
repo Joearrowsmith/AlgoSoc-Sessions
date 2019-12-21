@@ -15,14 +15,11 @@ class EchoAgent(Agent):
         print(f'Tick: {bid: .05f}, {ask: .05f}, {time}')
 
 
-if __name__ == '__main__':
-    backtest = True
-    if backtest:
-        from util import check_if_in_agents
-        check_if_in_agents()
-        agent = EchoAgent(backtest='../data/backtest_GBPUSD_12_hours.csv')
-    else:
+def main(backtest=None):
+    if backtest is None:
         agent = EchoAgent(username='joe', password='1234',
                           ticker='tcp://icats.doc.ic.ac.uk:7000',
                           endpoint='http://icats.doc.ic.ac.uk')
+    else:
+        agent = EchoAgent(backtest=backtest)
     agent.run()

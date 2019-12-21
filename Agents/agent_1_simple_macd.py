@@ -79,7 +79,8 @@ class SimpleMACDAgent(Agent):
         self.signal.open("sell")
 
 
-def main(fast_length=120, slow_length=250, backtest=None, verbose=True):
+def main(fast_length=120, slow_length=250, 
+         backtest=None, verbose=True):
     if backtest is None:
         agent = SimpleMACDAgent(fast_length=fast_length,
                                 slow_length=slow_length,

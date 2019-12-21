@@ -43,14 +43,10 @@ class RetBoundRiskMACDAgent(Agent):
 
     def init_tests(self, fast_length, slow_length, ret_length,
                    ret_upper_scaling_factor, ret_lower_scaling_factor):
-        assert fast_length < slow_length, "Fast length must be \
-            less than slow length."
-        assert ret_length > 3, "Ret length must be at \
-            least 3 otherwise array is too small."
-        assert ret_upper_scaling_factor > 0, "Ret upper scaling factor must be \
-            a positive decimal."
-        assert ret_lower_scaling_factor > 0, "Ret lower scaling factor must be \
-            a positive decimal."
+        assert fast_length < slow_length, "Fast length must be less than slow length."
+        assert ret_length > 3, "Ret length must be at least 3 otherwise array is too small."
+        assert ret_upper_scaling_factor > 0, "Ret upper scaling factor must be a positive decimal."
+        assert ret_lower_scaling_factor > 0, "Ret lower scaling factor must be a positive decimal."
 
     def on_tick(self, bid, ask, time=None):
         """Called on every tick update."""
@@ -75,11 +71,12 @@ class RetBoundRiskMACDAgent(Agent):
         if is_new_signal:
             if self.verbose:
                 print(f"New signal: {signal}, {self.last_signal}")
-            self.last_signal = self.order_macd(signal)
+            self.order_macd(signal)
             self.ret_bound['upper'] = rets_std * self.ret_scaling_factor['upper'] + rets_mean
             self.ret_bound['lower'] = -1 * rets_std * self.ret_scaling_factor['lower'] + rets_mean
 
         self.last_mid = mid
+        self.last_signal = signal
 
     def get_signal(self, mid):
         ret = mid-self.last_mid
@@ -126,25 +123,30 @@ class RetBoundRiskMACDAgent(Agent):
     #         super().close()
     #     self.signal.close()
 
-if __name__ == "__main__":
-    backtest = True
-    verbose = False
-    if backtest:
-        from util import check_if_in_agents
-        check_if_in_agents()
-        agent = RetBoundRiskMACDAgent(ret_length=100,
-                                      ret_upper_scaling_factor=1.2,
-                                      ret_lower_scaling_factor=3.0,
-                                      fast_length=120, slow_length=250,
-                                      verbose=verbose,
-                                      backtest='../data/backtest_GBPUSD_12_hours.csv')
-    else:
-        agent = RetBoundRiskMACDAgent(ret_length=100,
-                                      ret_upper_scaling_factor=1.2,
-                                      ret_lower_scaling_factor=3.0,
-                                      fast_length=100, slow_length=250,
+
+def main(ret_length=100,
+         ret_upper_scaling_factor=1.2,
+         ret_lower_scaling_factor=3.0,
+         fast_length=100,
+         slow_length=250,
+         backtest=None, verbose=True):
+    if backtest is None:
+        agent = RetBoundRiskMACDAgent(ret_length=ret_length,
+                                      ret_upper_scaling_factor=ret_upper_scaling_factor,
+                                      ret_lower_scaling_factor=ret_lower_scaling_factor,
+                                      fast_length=fast_length,
+                                      slow_length=slow_length,
                                       verbose=verbose,
                                       username='joe', password='1234',
                                       ticker='tcp://icats.doc.ic.ac.uk:7000',
                                       endpoint='http://icats.doc.ic.ac.uk')
+
+    else:
+        agent = RetBoundRiskMACDAgent(ret_length=ret_length,
+                                      ret_upper_scaling_factor=ret_upper_scaling_factor,
+                                      ret_lower_scaling_factor=ret_lower_scaling_factor,
+                                      fast_length=fast_length,
+                                      slow_length=slow_length,
+                                      verbose=verbose,
+                                      backtest=backtest)
     agent.run()

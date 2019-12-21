@@ -60,7 +60,7 @@ class SimpleRiskMACDAgent(Agent):
                 print(f"New signal: {signal}, {self.last_signal}")
             self.order(signal)
         else:
-            signal = 0.
+            signal = 0
 
         self.check_take_profit_stop_loss(bid, ask)
         self.last_mid = mid

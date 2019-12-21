@@ -34,8 +34,7 @@ class DecisionTreeAgent(Agent):
         self.fast_avg, self.slow_avg = None, None
 
     def init_tests(self, fast_length, slow_length, horizon, max_depth):
-        assert fast_length < slow_length, "Fast length must be \
-                                           less than slow length."
+        assert fast_length < slow_length, "Fast length must be less than slow length."
         assert horizon > 0, "Horizon must be greater than zero."
         assert max_depth > 0, "Must have positive max depth"
 
@@ -120,21 +119,23 @@ class DecisionTreeAgent(Agent):
         self.tree.fit(self.X_train, self.y_train)
 
 
-if __name__ == "__main__":
-    backtest = True
-    verbose = False
-    if backtest:
-        from util import check_if_in_agents
-        check_if_in_agents()
-        agent = DecisionTreeAgent(horizon=3, max_depth=1,
-                                  fast_length=141, slow_length=311,
-                                  verbose=verbose,
-                                  backtest="../data/backtest_GBPUSD_12_hours.csv")
-    else:
-        agent = DecisionTreeAgent(horizon=3, max_depth=2,
-                                  fast_length=141, slow_length=351,
+def main(horizon=3, max_depth=1,
+         fast_length=141, slow_length=311,
+         backtest=None, verbose=True):
+    if backtest is None:
+        agent = DecisionTreeAgent(horizon=horizon,
+                                  max_depth=max_depth,
+                                  fast_length=fast_length,
+                                  slow_length=slow_length,
                                   verbose=verbose,
                                   username="joe", password="1234",
                                   ticker="tcp://icats.doc.ic.ac.uk:7000",
                                   endpoint="http://icats.doc.ic.ac.uk")
+    else:
+        agent = DecisionTreeAgent(horizon=horizon,
+                                  max_depth=max_depth,
+                                  fast_length=fast_length,
+                                  slow_length=slow_length,
+                                  verbose=verbose,
+                                  backtest=backtest)
     agent.run()
