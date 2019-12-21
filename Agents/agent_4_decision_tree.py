@@ -121,7 +121,7 @@ class DecisionTreeAgent(Agent):
 
 def main(horizon=3, max_depth=1,
          fast_length=141, slow_length=311,
-         backtest=None, verbose=True):
+         verbose=True, backtest=None):
     if backtest is None:
         agent = DecisionTreeAgent(horizon=horizon,
                                   max_depth=max_depth,

@@ -65,7 +65,7 @@ class RetBoundRiskMACDAgent(Agent):
         rets_std = np.std(self.rets)
 
         if (ret > self.ret_bound['upper']) or (ret < self.ret_bound['lower']):
-            self.close()
+            self._close()
 
         is_new_signal = np.sign(signal) != np.sign(self.last_signal)
         if is_new_signal:
@@ -89,9 +89,9 @@ class RetBoundRiskMACDAgent(Agent):
 
     def order_macd(self, signal):
         if signal > 0:
-            self.buy()
+            self._buy()
         elif signal < 1:
-            self.sell()
+            self._sell()
 
     def on_order(self, order):
         """Called on placing a new order."""
@@ -105,23 +105,23 @@ class RetBoundRiskMACDAgent(Agent):
             print("Order closed", order, profit)
             print("Current balance:", self.balance)  # Agent balance only
 
-    # def buy(self):
-    #     '''Overloading the Agent.buy function to add our signal update'''
-    #     if self.make_order:
-    #         super().buy()
-    #     self.signal.open("buy")
+    def _buy(self):
+        '''Overloading the Agent.buy function to add our signal update'''
+        if self.make_order:
+            self.buy()
+        self.signal.open("buy")
 
-    # def sell(self):
-    #     '''Overloading the Agent.sell function to add our signal update'''
-    #     if self.make_order:
-    #         super().sell()
-    #     self.signal.open("sell")
+    def _sell(self):
+        '''Overloading the Agent.sell function to add our signal update'''
+        if self.make_order:
+            self.sell()
+        self.signal.open("sell")
 
-    # def close(self):
-    #     '''Overloading the Agent.close function to add our signal update'''
-    #     if self.make_order:
-    #         super().close()
-    #     self.signal.close()
+    def _close(self):
+        '''Overloading the Agent.close function to add our signal update'''
+        if self.make_order:
+            self.close()
+        self.signal.close()
 
 
 def main(ret_length=100,
@@ -129,7 +129,7 @@ def main(ret_length=100,
          ret_lower_scaling_factor=3.0,
          fast_length=100,
          slow_length=250,
-         backtest=None, verbose=True):
+         verbose=True, backtest=None):
     if backtest is None:
         agent = RetBoundRiskMACDAgent(ret_length=ret_length,
                                       ret_upper_scaling_factor=ret_upper_scaling_factor,

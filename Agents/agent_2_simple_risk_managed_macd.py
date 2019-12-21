@@ -78,9 +78,9 @@ class SimpleRiskMACDAgent(Agent):
 
     def order(self, signal):
         if signal > 0:
-            self.buy()
+            self._buy()
         elif signal < 0:
-            self.sell()
+            self._sell()
 
     def check_take_profit_stop_loss(self, bid, ask):
         if self.orders:
@@ -92,13 +92,13 @@ class SimpleRiskMACDAgent(Agent):
                 if self.verbose:
                     print(f"Take profit: \
                         {diff: .05f} > {self.take_profit: .05f}")
-                self.close()
+                self._close()
                 return
             if diff < (self.stop_loss):
                 if self.verbose:
                     print(f"Stop loss: \
                         {diff: .05f} < {self.stop_loss: .05f}")
-                self.close()
+                self._close()
                 return
 
     def on_order(self, order):
@@ -120,28 +120,28 @@ class SimpleRiskMACDAgent(Agent):
             print("Order closed", order, profit)
             print("Current balance:", self.balance)  # Agent balance only
 
-    # def buy(self):
-    #     '''Overloading the Agent.buy function to add our signal update'''
-    #     if self.make_order:
-    #         super().buy()
-    #     self.signal.open("buy")
+    def _buy(self, *args, **kwargs):
+        '''Overloading the Agent.buy function to add our signal update'''
+        if self.make_order:
+            self.buy(*args, **kwargs)
+        self.signal.open("buy")
 
-    # def sell(self):
-    #     '''Overloading the Agent.sell function to add our signal update'''
-    #     if self.make_order:
-    #         super().sell()
-    #     self.signal.open("sell")
+    def _sell(self, *args, **kwargs):
+        '''Overloading the Agent.sell function to add our signal update'''
+        if self.make_order:
+            self.sell(*args, **kwargs)
+        self.signal.open("sell")
 
-    # def close(self):
-    #     '''Overloading the Agent.close function to add our signal update'''
-    #     if self.make_order:
-    #         super().close()
-    #     self.signal.close()
+    def _close(self, *args, **kwargs):
+        '''Overloading the Agent.close function to add our signal update'''
+        if self.make_order:
+            self.close(*args, **kwargs)
+        self.signal.close()
 
 
 def main(stop_loss_scaling=2, take_profit_scaling=1.5,
          fast_length=120, slow_length=250,
-         backtest=None, verbose=True):
+         verbose=True, backtest=None):
     if backtest is None:
         agent = SimpleRiskMACDAgent(stop_loss_scaling=stop_loss_scaling,
                                     take_profit_scaling=take_profit_scaling,

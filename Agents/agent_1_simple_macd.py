@@ -50,9 +50,9 @@ class SimpleMACDAgent(Agent):
     def order(self):
         signal = self.signal.value
         if signal > 0:
-            self.buy()
+            self._buy()
         elif signal < 0:
-            self.sell()
+            self._sell()
 
     def on_order(self, order):
         '''Called on placing a new order.'''
@@ -66,21 +66,21 @@ class SimpleMACDAgent(Agent):
             print('Order closed', order, profit)
             print('Current balance:', self.balance)  # Agent balance only
 
-    def buy(self):
+    def _buy(self):
         '''Overloading the Agent.buy function to add our signal update'''
         if self.make_order:
-            super().buy()
+            self.buy()
         self.signal.open("buy")
 
-    def sell(self):
+    def _sell(self):
         '''Overloading the Agent.sell function to add our signal update'''
         if self.make_order:
-            super().sell()
+            self.sell()
         self.signal.open("sell")
 
 
-def main(fast_length=120, slow_length=250, 
-         backtest=None, verbose=True):
+def main(fast_length=120, slow_length=250,
+         verbose=True, backtest=None):
     if backtest is None:
         agent = SimpleMACDAgent(fast_length=fast_length,
                                 slow_length=slow_length,
