@@ -16,7 +16,16 @@ class Core(Agent):
         self.est_order_open_price = None
         self.signal_value = None
         self.prev_tick = None
-        
+    
+    def set_make_orders(self, make_orders):
+        if self.verbose:
+            print(f"Changing make orders to: {make_orders}")
+        assert make_orders in [True, False], "make_orders must be true or false"
+        self.make_orders = make_orders
+        self.order_type = "close"
+        self.is_order_open = False
+        self.is_new_order = False
+
     def set_signal(self, signal_value):
         self.signal_value = signal_value
     

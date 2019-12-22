@@ -1,62 +1,25 @@
 '''
- Simple momentum strategy looking at the
- cross over of two moving averages of the returns.
+Agent that uses a linear model to make decisions.
 '''
 
 from Agents.Core import Core
-from time import sleep
 
 class LinearAgent(Core):
     name = "Linear_Agent"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.count = 0
         
     def core_on_tick(self, bid, ask, time=None):
         '''Called on every tick update.'''        
-        if self.count == 10:
-            print("buying")
-            print(self.core_buy(bid, ask))
-
-        if self.count == 30:
-            print("closing buy")
-            print(self.core_close(bid, ask))
-        
-
-        if self.count == 40:
-            print("selling")
-            print(self.core_sell(bid, ask))
-        
-        if self.count == 70:
-            print("closing sell")
-            print(self.core_close(bid, ask))
-        
-        if self.count == 80:
-            print("buying")
-            print(self.core_buy(bid, ask))
-            
-        if self.count == 90:
-            print("closing buy - selling")
-            print(self.core_sell(bid, ask))
-
-        if self.count == 120:
-            print("closing sell")
-            print(self.core_close(bid, ask))
-
-        if self.count == 135:
-            print("closing nothing")
-            print(self.core_close(bid, ask))
-
-        if self.count > 140:
-            sleep(10)
-        self.count += 1
+        pass
 
     def core_on_order_close(self, est_profit, est_order_open_price, order_type):
-        print("order close -------------------------------")
+        pass
 
     def core_order_open(self, est_order_open_price, order_type):
-        print("order open -----------------------------")
+        pass
+
 
 def main(rets_length, make_orders, verbose=True, backtest=None):
     if backtest is None:
