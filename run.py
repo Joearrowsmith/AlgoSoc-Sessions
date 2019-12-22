@@ -35,6 +35,12 @@ def run_agent_from_args(args):
         agent_4_main(backtest=backtest_path, verbose=args.verbose, **kwargs)
     elif args.agent == 5:
         raise NotImplementedError
+    elif args.agent == 6:
+        from Agents.agent_6_linear_model import main as agent_6_main
+        agent_6_main(rets_length=args.ret_length,
+                     make_orders=args.no_make_order,
+                     verbose=args.verbose, 
+                     backtest=backtest_path, **kwargs)
     else:
         raise NotImplementedError
 
@@ -44,6 +50,8 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description='Parameters to determine which agent should run and with what parameters.')
     parser.add_argument('--backtest_path', type=str, default=backtest_default, help="Path of backtest file, enter None for live data")
+    parser.add_argument('--no_make_order', action='store_false', help="Makes the agent only estimate orders")
+    parser.add_argument('--ret_length', type=int, default=5, help="Length of the rets deque")
     parser.add_argument('--verbose', action='store_true', help="Enter to make agent verbose")
     parser.add_argument('--agent', type=int, default=0, help="Enter the number of the agent you wish to run, zero by default")
     parser.add_argument('agent_params', nargs='*', help="Enter the parameters for the agent.")
