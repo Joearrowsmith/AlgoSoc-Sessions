@@ -4,10 +4,7 @@
 '''
 
 from Agents.Core import Core
-import numpy as np
-
 from time import sleep
-
 
 class LinearAgent(Core):
     name = "Linear_Agent"
@@ -54,6 +51,12 @@ class LinearAgent(Core):
         if self.count > 140:
             sleep(10)
         self.count += 1
+
+    def core_on_order_close(self, est_profit, est_order_open_price, order_type):
+        print("order close -------------------------------")
+
+    def core_order_open(self, est_order_open_price, order_type):
+        print("order open -----------------------------")
 
 def main(rets_length, make_orders, verbose=True, backtest=None):
     if backtest is None:

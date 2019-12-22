@@ -51,6 +51,7 @@ class Core(Agent):
             self.est_order_open_price = None
             if self.make_orders:
                 self.close()
+            self.core_on_order_close(est_profit, self.est_order_open_price, self.order_type)
             self.is_order_open = False
             self.order_type = "close"
         return est_profit
@@ -64,11 +65,13 @@ class Core(Agent):
         if self.is_new_order:
             if closing_opp_order:
                 est_profit = self.get_est_profit(bid, ask, self.order_type)
+                self.core_on_order_close(est_profit, self.est_order_open_price, self.order_type)
             self.est_order_open_price = open_price
             if self.make_orders:
                 self.buy()
             if self.verbose:
                 print(f"Buy open at ask: {ask}")
+            self.core_order_open(ask, "buy")
             self.is_order_open = True
             self.order_type = "buy"
         return est_profit
@@ -82,11 +85,13 @@ class Core(Agent):
         if self.is_new_order:
             if closing_opp_order:
                 est_profit = self.get_est_profit(bid, ask, self.order_type)
+                self.core_on_order_close(est_profit, self.est_order_open_price, self.order_type)
             self.est_order_open_price = open_price
             if self.make_orders:
                 self.sell()
             if self.verbose:
                 print(f"Sell open at bid: {bid}")
+            self.core_order_open(bid, "sell")
             self.is_order_open = True
             self.order_type = "sell"
         return est_profit
@@ -120,4 +125,10 @@ class Core(Agent):
         return est_profit
 
     def core_on_tick(self, bid, ask, time):
+        pass
+
+    def core_order_open(self, est_order_open_price, order_type):
+        pass
+
+    def core_on_order_close(self, est_profit, est_order_open_price, order_type):
         pass
