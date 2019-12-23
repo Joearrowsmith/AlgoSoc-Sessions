@@ -20,10 +20,12 @@ def run_agent_from_args(args):
 
     if args.agent == 0:
         from Agents.agent_0_echo import main as agent_0_main
-        agent_0_main(backtest=backtest_path, **kwargs)
+        agent_0_main(backtest=backtest_path)
     elif args.agent == 1:
         from Agents.agent_1_simple_macd import main as agent_1_main
-        agent_1_main(backtest=backtest_path, verbose=args.verbose, **kwargs)
+        agent_1_main(make_orders=args.no_make_order,
+                     verbose=args.verbose,
+                     backtest=backtest_path, **kwargs)
     elif args.agent == 2:
         from Agents.agent_2_simple_risk_managed_macd import main as agent_2_main
         agent_2_main(backtest=backtest_path, verbose=args.verbose, **kwargs)

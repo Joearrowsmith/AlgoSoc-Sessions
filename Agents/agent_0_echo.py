@@ -3,16 +3,15 @@ The simplest possible agent: prints the current bid, ask and time.
 Works for backtest and real-time data.
 '''
 
-from pedlar.agent import Agent
+from Agents.core import Core
 
-
-class EchoAgent(Agent):
+class EchoAgent(Core):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def on_tick(self, bid, ask, time=None):
-        print(f'Tick: {bid: .05f}, {ask: .05f}, {time}')
+    def core_on_tick(self, bid, ask, time=None):
+        print(f'Core Tick: {bid: .05f}, {ask: .05f}, {time}')
 
 
 def main(backtest=None):

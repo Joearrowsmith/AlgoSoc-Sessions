@@ -3,87 +3,55 @@
  cross over of two moving averages of the returns.
 '''
 
-from pedlar.agent import Agent
-from Agents.signal import Signal
-from collections import deque
+from Agents.core import Core
 import numpy as np
 
 
-class SimpleMACDAgent(Agent):
+class SimpleMACDAgent(Core):
     name = "Simple_MACD"
 
     def __init__(self,
-                 fast_length, slow_length,
-                 verbose=False, make_order=True, **kwargs):
+                 fast_length, slow_length, 
+                 **kwargs):
         super().__init__(**kwargs)
         self.init_tests(fast_length, slow_length)
-        self.fast = deque(maxlen=fast_length)
-        self.slow = deque(maxlen=slow_length)
-        self.verbose = verbose
-        self.last_mid = None
-        self.make_order = make_order
-        self.signal = Signal(False, None, None)
+        self.fast_length = fast_length
+        self.slow_length = slow_length
 
     def init_tests(self, fast_length, slow_length):
         assert fast_length < slow_length, "Fast length must be less than slow length."
+        assert fast_length > 0, "Fast length must be more than zero"
 
-    def on_tick(self, bid, ask, time=None):
-        '''Called on every tick update.'''
-        mid = (bid + ask) / 2
-        if self.verbose:
-            print(f'Tick: {mid: .05f}, {time}')
-        if self.last_mid is None:
-            self.last_mid = mid
+    def core_on_tick(self, bid, ask, time):
+        signal = self.get_macd_signal()
+        if signal is None:
             return
-        self.set_macd_signal(mid)
-        self.order()
+        self.set_signal(signal)
+        self.order(bid, ask)
 
-    def set_macd_signal(self, mid):
-        ret = mid-self.last_mid
-        self.fast.append(ret)
-        self.slow.append(ret)
-        slow_mean = np.mean(self.slow)
-        fast_mean = np.mean(self.fast)
+    def get_macd_signal(self):
+        if len(self.rets) < self.rets.maxlen:
+            return None
+        slow_mean = np.mean(self.rets)
+        fast_mean = np.mean(np.array(self.rets)[-self.fast_length:])
         signal = fast_mean - slow_mean
-        self.signal.set_signal_value(signal)
+        return signal
 
-    def order(self):
-        signal = self.signal.value
+    def order(self, bid, ask):
+        signal = self.signal_value
         if signal > 0:
-            self._buy()
+            self.core_buy(bid, ask)
         elif signal < 0:
-            self._sell()
-
-    def on_order(self, order):
-        '''Called on placing a new order.'''
-        if self.verbose:
-            print('New order:', order)
-            print('Orders:', self.orders)  # Agent orders only
-
-    def on_order_close(self, order, profit):
-        '''Called on closing an order with some profit.'''
-        if self.verbose:
-            print('Order closed', order, profit)
-            print('Current balance:', self.balance)  # Agent balance only
-
-    def _buy(self):
-        '''Overloading the Agent.buy function to add our signal update'''
-        if self.make_order:
-            self.buy()
-        self.signal.open("buy")
-
-    def _sell(self):
-        '''Overloading the Agent.sell function to add our signal update'''
-        if self.make_order:
-            self.sell()
-        self.signal.open("sell")
+            self.core_sell(bid, ask)
 
 
 def main(fast_length=120, slow_length=250,
-         verbose=True, backtest=None):
+         make_orders=True, verbose=True, backtest=None):
     if backtest is None:
         agent = SimpleMACDAgent(fast_length=fast_length,
                                 slow_length=slow_length,
+                                rets_length=slow_length,
+                                make_orders=make_orders,
                                 verbose=verbose,
                                 username='joe', password='1234',
                                 ticker='tcp://icats.doc.ic.ac.uk:7000',
@@ -91,6 +59,9 @@ def main(fast_length=120, slow_length=250,
     else:
         agent = SimpleMACDAgent(fast_length=fast_length,
                                 slow_length=slow_length,
+                                rets_length=slow_length,
+                                make_orders=make_orders,
                                 verbose=verbose,
                                 backtest=backtest)
     agent.run()
+    print(agent.est_balance)

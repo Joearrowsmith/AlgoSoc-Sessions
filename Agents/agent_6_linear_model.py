@@ -2,7 +2,7 @@
 Agent that uses a linear model to make decisions.
 '''
 
-from Agents.Core import Core
+from Agents.core import Core
 
 class LinearAgent(Core):
     name = "Linear_Agent"

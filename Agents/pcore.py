@@ -4,18 +4,21 @@ import numpy as np
 
 class Core(Agent):
 
-    def __init__(self, rets_length, make_orders, verbose, **kwargs):
+    def __init__(self, rets_length=None, make_orders=True, verbose=False, **kwargs):
         super().__init__(**kwargs)
-        self.rets = deque(maxlen=rets_length)
+        self.rets_length = rets_length
+        if self.rets_length:
+            self.rets = deque(maxlen=rets_length)
         self.make_orders = make_orders
         self.verbose = verbose
 
         self.is_order_open = None
-        self.is_new_order = None
         self.order_type = "close"
         self.est_order_open_price = None
         self.signal_value = None
         self.prev_tick = None
+
+        self.est_balance = 0
     
     def set_make_orders(self, make_orders):
         if self.verbose:
@@ -24,7 +27,6 @@ class Core(Agent):
         self.make_orders = make_orders
         self.order_type = "close"
         self.is_order_open = False
-        self.is_new_order = False
 
     def set_signal(self, signal_value):
         self.signal_value = signal_value
@@ -39,7 +41,8 @@ class Core(Agent):
         log_ret = np.log(mid) - np.log(prev_mid)
         if self.verbose:
             print(f'Tick: {mid: .05f}, {log_ret: .06f}, {time}')
-        self.rets.append(log_ret)
+        if self.rets_length:
+            self.rets.append(log_ret)
         self.core_on_tick(bid, ask, time)
         self.prev_tick = (bid, ask, time)
         
@@ -53,9 +56,8 @@ class Core(Agent):
             print(f"Order open: {order}")
 
     def core_close(self, bid, ask):
-        self.check_is_new_order("close")
         est_profit = None
-        if self.is_new_order:
+        if self.check_is_new_order("close"):
             est_profit = self.get_est_profit(bid, ask, self.order_type)
             self.est_order_open_price = None
             if self.make_orders:
@@ -63,72 +65,60 @@ class Core(Agent):
             self.core_on_order_close(est_profit, self.est_order_open_price, self.order_type)
             self.is_order_open = False
             self.order_type = "close"
+            self.est_balance += est_profit
         return est_profit
 
     def core_buy(self, bid, ask):
-        print("core buy")
-        open_price = ask
-        self.check_is_new_order("buy")
-        closing_opp_order = self.check_closing_opposite_order("buy")
-        est_profit = None
-        if self.is_new_order:
-            if closing_opp_order:
-                est_profit = self.get_est_profit(bid, ask, self.order_type)
-                self.core_on_order_close(est_profit, self.est_order_open_price, self.order_type)
-            self.est_order_open_price = open_price
-            if self.make_orders:
-                self.buy()
-            if self.verbose:
-                print(f"Buy open at ask: {ask}")
-            self.core_order_open(ask, "buy")
-            self.is_order_open = True
-            self.order_type = "buy"
-        return est_profit
+        self.core_order("buy", bid, ask)
 
     def core_sell(self, bid, ask):
-        print("core sell")
-        open_price = bid
-        self.check_is_new_order("sell")
-        closing_opp_order = self.check_closing_opposite_order("sell")
+        self.core_order("sell", bid, ask)
+
+    def core_order(self, otype, bid, ask):
+        assert (otype == "buy") or (otype == "sell"), "otype must be buy or sell"
+        open_price = bid if (otype == "buy") else ask
         est_profit = None
-        if self.is_new_order:
-            if closing_opp_order:
-                est_profit = self.get_est_profit(bid, ask, self.order_type)
-                self.core_on_order_close(est_profit, self.est_order_open_price, self.order_type)
+        if self.check_is_new_order(otype):
+            if self.check_closing_opposite_order(otype):
+                self.core_close(bid, ask)
             self.est_order_open_price = open_price
             if self.make_orders:
-                self.sell()
+                if (otype == "buy"):
+                    self.buy()
+                else:
+                    self.sell()
             if self.verbose:
-                print(f"Sell open at bid: {bid}")
-            self.core_order_open(bid, "sell")
+                print(f"{otype} open at: {open_price}")
+            self.core_order_open(bid, otype)
             self.is_order_open = True
-            self.order_type = "sell"
+            self.order_type = otype
         return est_profit
 
     def check_is_new_order(self, new_order_type):
-        self.is_new_order = (self.order_type != new_order_type)
-        if self.is_new_order & self.verbose:
+        is_new_order = (self.order_type != new_order_type)
+        if is_new_order & self.verbose:
             print(f"New order detected of type: {new_order_type}")
+        return is_new_order
     
     def check_closing_opposite_order(self, new_order_type):
         """ Checks if a previous order open is opposite to the new order 
         and therefore closes that order."""
         if (self.order_type == "buy") & (new_order_type == "sell"):
-            if self.verbose:
-                print("Closing previous buy order.")
             return True
         elif (self.order_type == "sell") & (new_order_type == "buy"):
-            if self.verbose:
-                print("Closing previous sell order.")
             return True
         return False
 
     def get_est_profit(self, bid, ask, order_type):
         est_profit = None
+        leverage = 100
+        order_vol = 0.01
         if order_type == "buy":
-            est_profit = bid - self.est_order_open_price
+            diff = bid - self.est_order_open_price
+            est_profit = diff*leverage*order_vol*1000*(1/bid)
         elif order_type == "sell":
-            est_profit = self.est_order_open_price - ask
+            diff = self.est_order_open_price - ask
+            est_profit = diff*leverage*order_vol*1000*(1/ask)
         else:
             raise TypeError("order_type can only be 'buy' or 'sell'")
         return est_profit
