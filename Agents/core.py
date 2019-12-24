@@ -18,7 +18,7 @@ class Core(Agent):
         self.signal_value = None
         self.prev_tick = None
 
-        self.est_balance = 0
+        self.est_balance = [0, 0]
     
     def set_make_orders(self, make_orders):
         if self.verbose:
@@ -58,14 +58,17 @@ class Core(Agent):
     def core_close(self, bid, ask):
         est_profit = None
         if self.check_is_new_order("close"):
-            est_profit = self.get_est_profit(bid, ask, self.order_type)
+            est_profit, pedlar_est_profit = self.get_est_profit(bid, ask, self.order_type)
             self.est_order_open_price = None
             if self.make_orders:
                 self.close()
             self.core_on_order_close(est_profit, self.est_order_open_price, self.order_type)
             self.is_order_open = False
             self.order_type = "close"
-            self.est_balance += est_profit
+            self.est_balance[0] += est_profit
+            self.est_balance[1] += pedlar_est_profit
+            if self.verbose:
+                print(f"Close, profit est.: {est_profit}")
         return est_profit
 
     def core_buy(self, bid, ask):
@@ -89,7 +92,7 @@ class Core(Agent):
                     self.sell()
             if self.verbose:
                 print(f"{otype} open at: {open_price}")
-            self.core_order_open(bid, otype)
+            self.core_order_open(open_price, otype, bid, ask)
             self.is_order_open = True
             self.order_type = otype
         return est_profit
@@ -109,24 +112,41 @@ class Core(Agent):
             return True
         return False
 
-    def get_est_profit(self, bid, ask, order_type):
-        est_profit = None
-        leverage = 100
-        order_vol = 0.01
+    def get_diff(self, bid, ask, order_type):
         if order_type == "buy":
             diff = bid - self.est_order_open_price
-            est_profit = diff*leverage*order_vol*1000*(1/bid)
-        elif order_type == "sell":
+        elif order_type == "sell": 
             diff = self.est_order_open_price - ask
-            est_profit = diff*leverage*order_vol*1000*(1/ask)
         else:
             raise TypeError("order_type can only be 'buy' or 'sell'")
-        return est_profit
+        return diff
+
+    def get_est_profit(self, bid, ask, order_type):
+        est_profit, pedlar_est_profit = None, None
+        leverage = 100
+        order_vol = 0.01
+        diff = self.get_diff(bid, ask, order_type)
+        if order_type == "buy":
+            est_profit = diff*leverage*order_vol*1000*(1/bid)
+            pedlar_est_profit = round(est_profit, 2)
+        elif order_type == "sell":
+            est_profit = diff*leverage*order_vol*1000*(1/ask)
+            pedlar_est_profit = round(est_profit, 2)
+        else:
+            raise TypeError("order_type can only be 'buy' or 'sell'")
+        return est_profit, pedlar_est_profit
+
+    def core_run(self):
+        self.run()
+        if self.verbose:
+            print(f"Core Session accurate balance: {self.est_balance[0]: .03f}")
+            print(f"Core pedlar balance: {self.est_balance[1]: .03f}")
+            print("--------------")
 
     def core_on_tick(self, bid, ask, time):
         pass
 
-    def core_order_open(self, est_order_open_price, order_type):
+    def core_order_open(self, est_order_open_price, order_type, bid, ask):
         pass
 
     def core_on_order_close(self, est_profit, est_order_open_price, order_type):

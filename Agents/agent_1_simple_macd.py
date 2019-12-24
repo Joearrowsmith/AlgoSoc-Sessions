@@ -4,6 +4,7 @@
 '''
 
 from Agents.core import Core
+from Agents.signal import get_macd_signal
 import numpy as np
 
 
@@ -32,10 +33,7 @@ class SimpleMACDAgent(Core):
     def get_macd_signal(self):
         if len(self.rets) < self.rets.maxlen:
             return None
-        slow_mean = np.mean(self.rets)
-        fast_mean = np.mean(np.array(self.rets)[-self.fast_length:])
-        signal = fast_mean - slow_mean
-        return signal
+        return get_macd_signal(np.array(self.rets)[-self.fast_length:], self.rets)
 
     def order(self, bid, ask):
         signal = self.signal_value
@@ -63,5 +61,4 @@ def main(fast_length=120, slow_length=250,
                                 make_orders=make_orders,
                                 verbose=verbose,
                                 backtest=backtest)
-    agent.run()
-    print(agent.est_balance)
+    agent.core_run()

@@ -8,7 +8,7 @@ def get_kwargs_from_args(args):
                 raise Exception("agent_params can not have a key of verbose")
             elif key == "backtest":
                 raise Exception("agent_params can not have a key of backtest")
-            kwargs[key] = int(value)
+            kwargs[key] = float(value)
     except ValueError:
         raise ValueError("agent_params expected to be inputted in the form: 'argument=value'")
     return kwargs
@@ -28,16 +28,22 @@ def run_agent_from_args(args):
                      backtest=backtest_path, **kwargs)
     elif args.agent == 2:
         from Agents.agent_2_simple_risk_managed_macd import main as agent_2_main
-        agent_2_main(backtest=backtest_path, verbose=args.verbose, **kwargs)
+        agent_2_main(make_orders=args.no_make_order,
+                     verbose=args.verbose, 
+                     backtest=backtest_path, **kwargs)
     elif args.agent == 3:
         from Agents.agent_3_ret_bound_risk_macd import main as agent_3_main
-        agent_3_main(backtest=backtest_path, verbose=args.verbose, **kwargs)
+        agent_3_main(make_orders=args.no_make_order,
+                     verbose=args.verbose, 
+                     backtest=backtest_path, **kwargs)
     elif args.agent == 4:
+        raise NotImplementedError
         from Agents.agent_4_decision_tree import main as agent_4_main
         agent_4_main(backtest=backtest_path, verbose=args.verbose, **kwargs)
     elif args.agent == 5:
         raise NotImplementedError
     elif args.agent == 6:
+        raise NotImplementedError
         from Agents.agent_6_linear_model import main as agent_6_main
         agent_6_main(rets_length=args.ret_length,
                      make_orders=args.no_make_order,
