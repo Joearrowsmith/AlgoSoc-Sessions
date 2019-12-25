@@ -33,6 +33,8 @@ class DecisionTreeAgent(Core):
                    target_profit):
         assert fast_length < slow_length, "Fast length must be less than slow length."
         assert fast_length > 0, "Fast length must be more than zero"
+        assert self.rets_length is not None, "Must define a rets length"
+        assert self.rets_length >= slow_length, "Rets length must be at least slow length"
         assert prediction_horizon > 0, "Prediction Horizon must be greater than zero."
         assert max_depth > 0, "Must have positive max depth"
         assert target_profit > 0, "Target profit must be greater than zero"

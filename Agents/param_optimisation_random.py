@@ -43,22 +43,24 @@ def random_search_max_expected_return(Agent,
     return test_param_balances
 
 
-if __name__ == '__main__':
-    from Agents.agent_4_decision_tree import DecisionTreeAgent
-    search_dict = {'horizon': [2, 30, int],
-                   'max_depth': [1, 4, int],
-                   'fast_length': [10, 149, int],
-                   'slow_length': [20, 500, int]}
-    verbose = True
-    backtest = '../data/backtest_GBPUSD_12_hours.csv'
-    test_param_balances = random_search_max_expected_return(DecisionTreeAgent,
-                                                            search_dict,
-                                                            200,
-                                                            backtest=backtest,
-                                                            verbose=verbose)
-    local_optimal_params = test_param_balances[0]
-    agent = DecisionTreeAgent(verbose=verbose,
-                              username='Joe', password='1234',
-                              ticker='tcp://icats.doc.ic.ac.uk:7000',
-                              endpoint='http://icats.doc.ic.ac.uk',
-                              **local_optimal_params[0])
+"""
+Example Usage
+from Agents.agent_4_decision_tree import DecisionTreeAgent
+search_dict = {'horizon': [2, 30, int],
+                'max_depth': [1, 4, int],
+                'fast_length': [10, 149, int],
+                'slow_length': [20, 500, int]}
+verbose = True
+backtest = '../data/backtest_GBPUSD_12_hours.csv'
+test_param_balances = random_search_max_expected_return(DecisionTreeAgent,
+                                                        search_dict,
+                                                        200,
+                                                        backtest=backtest,
+                                                        verbose=verbose)
+local_optimal_params = test_param_balances[0]
+agent = DecisionTreeAgent(verbose=verbose,
+                            username='Joe', password='1234',
+                            ticker='tcp://icats.doc.ic.ac.uk:7000',
+                            endpoint='http://icats.doc.ic.ac.uk',
+                            **local_optimal_params[0])
+"""

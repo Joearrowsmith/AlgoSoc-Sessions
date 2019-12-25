@@ -25,7 +25,8 @@ class SimpleRiskMACDAgent(Core):
     def init_tests(self, fast_length, slow_length, rets_length):
         assert fast_length < slow_length, "Fast length must be less than slow length."
         assert fast_length > 0, "Fast length must be more than zero"
-        assert rets_length >= 3, "Ret length must be at least 3 otherwise array is too small"
+        assert self.rets_length is not None, "Must define a rets length"
+        assert self.rets_length >= slow_length, "Rets length must be at least slow length"
 
     def core_on_tick(self, bid, ask, time):
         signal = self.get_macd_signal()
