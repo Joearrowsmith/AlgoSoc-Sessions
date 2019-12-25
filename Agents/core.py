@@ -14,6 +14,7 @@ class Core(Agent):
 
         self.is_order_open = None
         self.order_type = "close"
+        self.order_length = None
         self.est_order_open_price = None
         self.signal_value = None
         self.prev_tick = None
@@ -27,6 +28,7 @@ class Core(Agent):
         self.make_orders = make_orders
         self.order_type = "close"
         self.is_order_open = False
+        self.order_length = None
 
     def set_signal(self, signal_value):
         self.signal_value = signal_value
@@ -43,6 +45,8 @@ class Core(Agent):
             print(f'Tick: {mid: .05f}, {log_ret: .06f}, {time}')
         if self.rets_length:
             self.rets.append(log_ret)
+        if self.is_order_open:
+            self.order_length += 1
         self.core_on_tick(bid, ask, time)
         self.prev_tick = (bid, ask, time)
         
@@ -65,6 +69,7 @@ class Core(Agent):
             self.core_on_order_close(est_profit, self.est_order_open_price, self.order_type)
             self.is_order_open = False
             self.order_type = "close"
+            self.order_length = None
             self.est_balance[0] += est_profit
             self.est_balance[1] += pedlar_est_profit
             if self.verbose:
@@ -72,12 +77,12 @@ class Core(Agent):
         return est_profit
 
     def core_buy(self, bid, ask):
-        self.core_order("buy", bid, ask)
+        self.core_make_order("buy", bid, ask)
 
     def core_sell(self, bid, ask):
-        self.core_order("sell", bid, ask)
+        self.core_make_order("sell", bid, ask)
 
-    def core_order(self, otype, bid, ask):
+    def core_make_order(self, otype, bid, ask):
         assert (otype == "buy") or (otype == "sell"), "otype must be buy or sell"
         open_price = bid if (otype == "buy") else ask
         est_profit = None
@@ -95,6 +100,7 @@ class Core(Agent):
             self.core_order_open(open_price, otype, bid, ask)
             self.is_order_open = True
             self.order_type = otype
+            self.order_length = 0
         return est_profit
 
     def check_is_new_order(self, new_order_type):

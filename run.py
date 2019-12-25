@@ -37,9 +37,10 @@ def run_agent_from_args(args):
                      verbose=args.verbose, 
                      backtest=backtest_path, **kwargs)
     elif args.agent == 4:
-        raise NotImplementedError
         from Agents.agent_4_decision_tree import main as agent_4_main
-        agent_4_main(backtest=backtest_path, verbose=args.verbose, **kwargs)
+        agent_4_main(make_orders=args.no_make_order,
+                     verbose=args.verbose, 
+                     backtest=backtest_path, **kwargs)
     elif args.agent == 5:
         raise NotImplementedError
     elif args.agent == 6:
