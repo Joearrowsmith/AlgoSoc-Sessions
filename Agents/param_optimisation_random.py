@@ -9,7 +9,7 @@ import random
 def random_search_max_expected_return(Agent,
                                       search_dictionary, n_steps,
                                       backtest,
-                                      verbose=False, sort=True):
+                                      verbose=False, sort=True, core=True):
     keys, values = search_dictionary.keys(), list(search_dictionary.values())
     failed_runs = 0
     test_param_balances = []
@@ -20,16 +20,23 @@ def random_search_max_expected_return(Agent,
                 k_value = random.randrange(values[idx][0], values[idx][1])
             elif values[idx][2] == float:
                 k_value = random.uniform(values[idx][0], values[idx][1])
+            elif type(values[idx]) == str:
+                assert values[idx] in agent_inputs, f"{values[idx]} must be agent_inputs"
+                agent_inputs[k] = agent_inputs[values[idx]]
             else:
-                raise NotImplementedError(f"Issue with types: {type(values[idx][0])}, {type(values[idx][1])}. {values[idx][2]} not int or float")
+                raise NotImplementedError()
             agent_inputs[k] = k_value
         if verbose:
             print(f"{n}) Using {agent_inputs}")
         try:
             agent = Agent(backtest=backtest, verbose=False, **agent_inputs)
-            agent.run()
-            test_balance = agent.balance
-            test_param_balances.append([agent_inputs, test_balance])
+            if not core:
+                agent.run()
+                test_param_balances.append([agent_inputs, agent.balance])
+            else:
+                agent.core_run()
+                test_param_balances.append([agent_inputs, agent.balance, 
+                                            agent.est_balance[0], agent.est_balance[1]])
         except Exception as E:
             failed_runs += 1
             print(f"Run failed: {E}, fail number: {failed_runs}")
@@ -49,7 +56,8 @@ from Agents.agent_4_decision_tree import DecisionTreeAgent
 search_dict = {'horizon': [2, 30, int],
                 'max_depth': [1, 4, int],
                 'fast_length': [10, 149, int],
-                'slow_length': [20, 500, int]}
+                'slow_length': [20, 500, int],
+                'rets_length': 'slow_length'}
 verbose = True
 backtest = '../data/backtest_GBPUSD_12_hours.csv'
 test_param_balances = random_search_max_expected_return(DecisionTreeAgent,
