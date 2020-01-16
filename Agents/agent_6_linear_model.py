@@ -35,3 +35,5 @@ def main(rets_length, make_orders, verbose=True, backtest=None):
                             verbose=verbose,
                             backtest=backtest)
     agent.run()
+    print(f"Final session balance est: {agent.est_balance[1]:.02f}")
+    print("--------------")
