@@ -45,12 +45,13 @@ class SimpleMACDAgent(Core):
             self.core_sell(bid, ask)
 
 
-def main(fast_length=120, slow_length=250,
+def main(fast_length=120, slow_length=250, signal_mean=10,
          make_orders=True, verbose=True, backtest=None):
     if backtest is None:
         agent = SimpleMACDAgent(fast_length=fast_length,
                                 slow_length=slow_length,
                                 rets_length=slow_length,
+                                signal_mean=signal_mean,
                                 make_orders=make_orders,
                                 verbose=verbose,
                                 username='joe', password='1234',
@@ -60,6 +61,7 @@ def main(fast_length=120, slow_length=250,
         agent = SimpleMACDAgent(fast_length=fast_length,
                                 slow_length=slow_length,
                                 rets_length=slow_length,
+                                signal_mean=signal_mean,
                                 make_orders=make_orders,
                                 verbose=verbose,
                                 backtest=backtest)

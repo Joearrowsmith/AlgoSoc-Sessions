@@ -57,7 +57,7 @@ class SimpleRiskMACDAgent(Core):
 
 
 def main(fast_length=120, slow_length=250,
-         stop_loss_scaling=2, take_profit_scaling=1.5,
+         stop_loss_scaling=2, take_profit_scaling=1.5, signal_mean=10,
          make_orders=True, verbose=True, backtest=None):
     if backtest is None:
         agent = SimpleRiskMACDAgent(fast_length=fast_length,
@@ -65,6 +65,7 @@ def main(fast_length=120, slow_length=250,
                                     stop_loss_scaling=stop_loss_scaling,
                                     take_profit_scaling=take_profit_scaling,
                                     rets_length=slow_length,
+                                    signal_mean=signal_mean,
                                     make_orders=make_orders,
                                     verbose=verbose,
                                     username='joe', password='1234',
@@ -76,6 +77,7 @@ def main(fast_length=120, slow_length=250,
                                     stop_loss_scaling=stop_loss_scaling,
                                     take_profit_scaling=take_profit_scaling,
                                     rets_length=slow_length,
+                                    signal_mean=signal_mean,
                                     make_orders=make_orders,
                                     verbose=verbose,
                                     backtest=backtest)
