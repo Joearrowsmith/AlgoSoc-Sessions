@@ -73,7 +73,7 @@ class Core(Agent):
             self.core_on_order_close(est_profit, self.est_order_open_price, self.order_type)
             self.is_order_open = False
             self.order_type = "close"
-            self.order_length = None
+            self.order_length = 0
             self.est_balance[0] += est_profit
             self.est_balance[1] += pedlar_est_profit
             if self.verbose:
@@ -101,6 +101,7 @@ class Core(Agent):
                     self.sell()
             if self.verbose:
                 print(f"{otype} open at: {open_price}")
+            
             self.core_order_open(open_price, otype, bid, ask)
             self.is_order_open = True
             self.order_type = otype
@@ -148,10 +149,6 @@ class Core(Agent):
 
     def core_run(self):
         self.run()
-        if self.verbose:
-            print(f"Core Session accurate balance: {self.est_balance[0]: .03f}")
-            print(f"Core pedlar balance: {self.est_balance[1]: .03f}")
-            print("--------------")
 
     def core_on_tick(self, bid, ask, time):
         pass

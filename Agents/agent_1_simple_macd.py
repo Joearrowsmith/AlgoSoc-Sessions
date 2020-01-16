@@ -66,5 +66,6 @@ def main(fast_length=120, slow_length=250, signal_mean=10,
                                 verbose=verbose,
                                 backtest=backtest)
     agent.core_run()
-    print(f"Final session balance est: {agent.est_balance[1]:.02f}")
+    print(f"Final session balance accurate est: {agent.est_balance[0]:.03f}")
+    print(f"Final session balance est: {agent.est_balance[1]:.03f}")
     print("--------------")
