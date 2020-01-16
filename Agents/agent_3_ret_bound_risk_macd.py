@@ -54,7 +54,7 @@ class RetBoundRiskMACDAgent(Core):
 
 def main(fast_length=120, slow_length=250,
          ret_upper_scaling_factor=1.5,
-         ret_lower_scaling_factor=2.0,
+         ret_lower_scaling_factor=2.0, signal_mean=10,
          make_orders=True, verbose=True, backtest=None):
     if backtest is None:
         agent = RetBoundRiskMACDAgent(fast_length=fast_length,
@@ -62,6 +62,7 @@ def main(fast_length=120, slow_length=250,
                                       ret_upper_scaling_factor=ret_upper_scaling_factor,
                                       ret_lower_scaling_factor=ret_lower_scaling_factor,
                                       rets_length=slow_length,
+                                      signal_mean=signal_mean,
                                       make_orders=make_orders,
                                       verbose=verbose,
                                       username='joe', password='1234',
@@ -74,7 +75,11 @@ def main(fast_length=120, slow_length=250,
                                       ret_upper_scaling_factor=ret_upper_scaling_factor,
                                       ret_lower_scaling_factor=ret_lower_scaling_factor,
                                       rets_length=slow_length,
+                                      signal_mean=signal_mean,
                                       make_orders=make_orders,
                                       verbose=verbose,
                                       backtest=backtest)
     agent.core_run()
+    print(f"Final session balance accurate est: {agent.est_balance[0]:.03f}")
+    print(f"Final session balance est: {agent.est_balance[1]:.03f}")
+    print("--------------")

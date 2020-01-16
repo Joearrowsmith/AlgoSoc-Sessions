@@ -10,7 +10,8 @@ def expicit_optimise_with_agent_1(backtest,
     from Agents.agent_1_simple_macd import SimpleMACDAgent
     test_cases = {'fast_length': [20,  60],
                   'slow_length': [40, 120],
-                  'rets_length': 'slow_length'}
+                  'rets_length': 'slow_length',
+                  'signal_mean': [1, 5],}
     test_param_balances = explicit_search_max_expected_return(
         SimpleMACDAgent, test_cases,
         backtest=backtest,
@@ -27,7 +28,8 @@ def random_optimise_with_agent_1(backtest,
     from Agents.agent_1_simple_macd import SimpleMACDAgent
     search_dict = {'fast_length': [5,   400, int],
                    'slow_length': [20, 1000, int],
-                   'rets_length': 'slow_length'}
+                   'rets_length': 'slow_length',
+                   'signal_mean': [1, 25, int]}
     test_param_balances = random_search_max_expected_return(
         SimpleMACDAgent, search_dict, n,
         backtest, verbose, sort
@@ -43,6 +45,7 @@ def expicit_optimise_with_agent_2(backtest,
     test_cases = {'fast_length': [120]*2,
                   'slow_length': [250]*2,
                   'rets_length': 'slow_length',
+                  'signal_mean': [1, 5],
                   'stop_loss_scaling': [1.1, 1.5],
                   'take_profit_scaling': [3.5, 5.0]}
     test_param_balances = explicit_search_max_expected_return(
@@ -62,6 +65,7 @@ def random_optimise_with_agent_2(backtest,
     search_dict = {'fast_length': [5, 400, int],
                    'slow_length': [20, 1000, int],
                    'rets_length': 'slow_length',
+                   'signal_mean': [1, 25, int],
                    'stop_loss_scaling': [1.1, 6.0, float],
                    'take_profit_scaling': [0.1, 6.0, float]}
     test_param_balances = random_search_max_expected_return(
@@ -79,6 +83,7 @@ def expicit_optimise_with_agent_3(backtest,
     test_cases = {'fast_length': [120]*2,
                   'slow_length': [250]*2,
                   'rets_length': 'slow_length',
+                  'signal_mean': [1, 5],
                   'ret_upper_scaling_factor': [2.5, 3.0],
                   'ret_lower_scaling_factor': [2.5, 3.0]}
     test_param_balances = explicit_search_max_expected_return(
@@ -98,6 +103,7 @@ def random_optimise_with_agent_3(backtest,
     search_dict = {'fast_length': [5, 200, int],
                    'slow_length': [150, 300, int],
                    'rets_length': 'slow_length',
+                   'signal_mean': [1, 25, int],
                    'ret_upper_scaling_factor': [0.1, 6.0, float],
                    'ret_lower_scaling_factor': [0.1, 6.0, float]}
     test_param_balances = random_search_max_expected_return(
@@ -115,6 +121,7 @@ def expicit_optimise_with_agent_4(backtest,
     test_cases = {'fast_length': [120]*2,
                   'slow_length': [250]*2,
                   'rets_length': 'slow_length',
+                  'signal_mean': [1, 5],
                   'prediction_horizon': [200, 250],
                   'max_depth': [1, 3],
                   'target_profit': [0.1, 0.2]}
@@ -135,6 +142,7 @@ def random_optimise_with_agent_4(backtest,
     search_dict = {'fast_length': [5, 200, int],
                    'slow_length': [150, 300, int],
                    'rets_length': 'slow_length',
+                   'signal_mean': [1, 25, int],
                    'prediction_horizon': [20, 500, int],
                    'max_depth': [1, 5, int],
                    'target_profit': [0.01, 0.5, float]}

@@ -4,7 +4,8 @@ import numpy as np
 
 class Core(Agent):
 
-    def __init__(self, rets_length=None, make_orders=True, verbose=False, **kwargs):
+    def __init__(self, rets_length=None,  signal_mean=1, make_orders=True, verbose=False, **kwargs):
+        assert (signal_mean >= 1 and type(signal_mean) is int), "Signal mean must be an integer greater than zero."
         super().__init__(**kwargs)
         self.rets_length = rets_length
         if self.rets_length:
@@ -16,8 +17,10 @@ class Core(Agent):
         self.order_type = "close"
         self.order_length = None
         self.est_order_open_price = None
-        self.signal_value = None
         self.prev_tick = None
+
+        self.signals = deque(maxlen=signal_mean)
+        self.signal_value = None
 
         self.est_balance = [0, 0]
     
@@ -31,7 +34,8 @@ class Core(Agent):
         self.order_length = None
 
     def set_signal(self, signal_value):
-        self.signal_value = signal_value
+        self.signals.append(signal_value)
+        self.signal_value = np.mean(self.signals)
     
     def on_tick(self, bid, ask, time):
         '''Called on every tick update.'''
@@ -69,7 +73,7 @@ class Core(Agent):
             self.core_on_order_close(est_profit, self.est_order_open_price, self.order_type)
             self.is_order_open = False
             self.order_type = "close"
-            self.order_length = None
+            self.order_length = 0
             self.est_balance[0] += est_profit
             self.est_balance[1] += pedlar_est_profit
             if self.verbose:
@@ -97,6 +101,7 @@ class Core(Agent):
                     self.sell()
             if self.verbose:
                 print(f"{otype} open at: {open_price}")
+            
             self.core_order_open(open_price, otype, bid, ask)
             self.is_order_open = True
             self.order_type = otype
@@ -144,10 +149,6 @@ class Core(Agent):
 
     def core_run(self):
         self.run()
-        if self.verbose:
-            print(f"Core Session accurate balance: {self.est_balance[0]: .03f}")
-            print(f"Core pedlar balance: {self.est_balance[1]: .03f}")
-            print("--------------")
 
     def core_on_tick(self, bid, ask, time):
         pass

@@ -21,9 +21,10 @@ class LinearAgent(Core):
         pass
 
 
-def main(rets_length, make_orders, verbose=True, backtest=None):
+def main(rets_length,  signal_mean, make_orders, verbose=True, backtest=None):
     if backtest is None:
         agent = LinearAgent(rets_length=rets_length,
+                            signal_mean=signal_mean,
                             make_orders=make_orders,
                             verbose=verbose,
                             username='joe', password='1234',
@@ -31,7 +32,11 @@ def main(rets_length, make_orders, verbose=True, backtest=None):
                             endpoint='http://icats.doc.ic.ac.uk')
     else:
         agent = LinearAgent(rets_length=rets_length,
+                            signal_mean=signal_mean,
                             make_orders=make_orders,
                             verbose=verbose,
                             backtest=backtest)
     agent.run()
+    print(f"Final session balance accurate est: {agent.est_balance[0]:.03f}")
+    print(f"Final session balance est: {agent.est_balance[1]:.03f}")
+    print("--------------")

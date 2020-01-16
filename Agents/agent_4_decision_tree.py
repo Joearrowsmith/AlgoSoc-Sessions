@@ -96,7 +96,7 @@ class DecisionTreeAgent(Core):
 
 def main(fast_length=120, slow_length=250, 
          prediction_horizon=15, max_depth=2, 
-         target_profit=0.01,
+         target_profit=0.01, signal_mean=10,
          make_orders=True, verbose=True, backtest=None):
     if backtest is None:
         agent = DecisionTreeAgent(fast_length=fast_length, 
@@ -105,6 +105,7 @@ def main(fast_length=120, slow_length=250,
                                   max_depth=max_depth, 
                                   target_profit=target_profit, 
                                   rets_length=slow_length,
+                                  signal_mean=signal_mean,
                                   make_orders=make_orders,
                                   verbose=verbose,
                                   username="joe", password="1234",
@@ -117,7 +118,11 @@ def main(fast_length=120, slow_length=250,
                                   max_depth=max_depth, 
                                   target_profit=target_profit, 
                                   rets_length=slow_length,
+                                  signal_mean=signal_mean,
                                   make_orders=make_orders,
                                   verbose=verbose,
                                   backtest=backtest)
     agent.core_run()
+    print(f"Final session balance accurate est: {agent.est_balance[0]:.03f}")
+    print(f"Final session balance est: {agent.est_balance[1]:.03f}")
+    print("--------------")
