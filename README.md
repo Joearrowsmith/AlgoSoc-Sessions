@@ -9,6 +9,10 @@
      		alt="Github Repo Size">
 </p>
 
+# Pedlar 2.0 Demo's
+
+[Pedlar 2.0 Repo](https://github.com/algotradingsoc/Demo-notebooks)
+
 ## Content
 
 - data:

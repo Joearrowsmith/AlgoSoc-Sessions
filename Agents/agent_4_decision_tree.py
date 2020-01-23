@@ -45,7 +45,6 @@ class DecisionTreeAgent(Core):
             return
         self.set_signal(signal)
         self.order(bid, ask)
-        
 
     def get_tree_signal(self):
         if len(self.rets) < self.rets.maxlen:
