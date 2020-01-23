@@ -23,7 +23,7 @@ class Core(Agent):
         self.signal_value = None
 
         self.est_balance = [0, 0]
-    
+
     def set_make_orders(self, make_orders):
         if self.verbose:
             print(f"Changing make orders to: {make_orders}")

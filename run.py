@@ -29,26 +29,25 @@ def run_agent_from_args(args):
     elif args.agent == 2:
         from Agents.agent_2_simple_risk_managed_macd import main as agent_2_main
         agent_2_main(make_orders=args.no_make_order,
-                     verbose=args.verbose, 
+                     verbose=args.verbose,
                      backtest=backtest_path, **kwargs)
     elif args.agent == 3:
         from Agents.agent_3_ret_bound_risk_macd import main as agent_3_main
         agent_3_main(make_orders=args.no_make_order,
-                     verbose=args.verbose, 
+                     verbose=args.verbose,
                      backtest=backtest_path, **kwargs)
     elif args.agent == 4:
         from Agents.agent_4_decision_tree import main as agent_4_main
         agent_4_main(make_orders=args.no_make_order,
-                     verbose=args.verbose, 
+                     verbose=args.verbose,
                      backtest=backtest_path, **kwargs)
     elif args.agent == 5:
         raise NotImplementedError
     elif args.agent == 6:
-        raise NotImplementedError
         from Agents.agent_6_linear_model import main as agent_6_main
         agent_6_main(rets_length=args.ret_length,
                      make_orders=args.no_make_order,
-                     verbose=args.verbose, 
+                     verbose=args.verbose,
                      backtest=backtest_path, **kwargs)
     else:
         raise NotImplementedError
