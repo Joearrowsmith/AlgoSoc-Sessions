@@ -4,8 +4,8 @@ import numpy as np
 
 class Core(Agent):
 
-    def __init__(self, rets_length=None,  signal_mean=1, make_orders=True, verbose=False, **kwargs):
-        assert (signal_mean >= 1 and type(signal_mean) is int), "Signal mean must be an integer greater than zero."
+    def __init__(self, rets_length=None, signal_mean_length=1, make_orders=True, verbose=False, **kwargs):
+        assert (signal_mean_length >= 1 and type(signal_mean_length) is int), "Signal mean length must be an integer greater than zero."
         super().__init__(**kwargs)
         self.rets_length = rets_length
         if self.rets_length:
@@ -19,11 +19,11 @@ class Core(Agent):
         self.est_order_open_price = None
         self.prev_tick = None
 
-        self.signals = deque(maxlen=signal_mean)
+        self.signals = deque(maxlen=signal_mean_length)
         self.signal_value = None
 
         self.est_balance = [0, 0]
-    
+
     def set_make_orders(self, make_orders):
         if self.verbose:
             print(f"Changing make orders to: {make_orders}")
@@ -36,14 +36,14 @@ class Core(Agent):
     def set_signal(self, signal_value):
         self.signals.append(signal_value)
         self.signal_value = np.mean(self.signals)
-    
+
     def on_tick(self, bid, ask, time):
         '''Called on every tick update.'''
         mid = (bid + ask) / 2
         if self.prev_tick is None:
             self.prev_tick = (bid, ask, time)
             return
-        prev_mid = (self.prev_tick[0] + self.prev_tick[1])/2
+        prev_mid = (self.prev_tick[0] + self.prev_tick[1]) / 2
         log_ret = np.log(mid) - np.log(prev_mid)
         if self.verbose:
             print(f'Tick: {mid: .05f}, {log_ret: .06f}, {time}')
@@ -53,12 +53,12 @@ class Core(Agent):
             self.order_length += 1
         self.core_on_tick(bid, ask, time)
         self.prev_tick = (bid, ask, time)
-        
+
     def on_order_close(self, order, profit):
         if self.verbose:
             print(f"Order closed: {order}")
-            print(f"Profit: {profit}") 
-        
+            print(f"Profit: {profit}")
+
     def on_order(self, order):
         if self.verbose:
             print(f"Order open: {order}")
@@ -101,7 +101,6 @@ class Core(Agent):
                     self.sell()
             if self.verbose:
                 print(f"{otype} open at: {open_price}")
-            
             self.core_order_open(open_price, otype, bid, ask)
             self.is_order_open = True
             self.order_type = otype
@@ -113,7 +112,7 @@ class Core(Agent):
         if is_new_order & self.verbose:
             print(f"New order detected of type: {new_order_type}")
         return is_new_order
-    
+
     def check_closing_opposite_order(self, new_order_type):
         """ Checks if a previous order open is opposite to the new order 
         and therefore closes that order."""
@@ -126,7 +125,7 @@ class Core(Agent):
     def get_diff(self, bid, ask, order_type):
         if order_type == "buy":
             diff = bid - self.est_order_open_price
-        elif order_type == "sell": 
+        elif order_type == "sell":
             diff = self.est_order_open_price - ask
         else:
             raise TypeError("order_type can only be 'buy' or 'sell'")
@@ -138,10 +137,10 @@ class Core(Agent):
         order_vol = 0.01
         diff = self.get_diff(bid, ask, order_type)
         if order_type == "buy":
-            est_profit = diff*leverage*order_vol*1000*(1/bid)
+            est_profit = diff * leverage * order_vol * 1000 * (1 / bid)
             pedlar_est_profit = round(est_profit, 2)
         elif order_type == "sell":
-            est_profit = diff*leverage*order_vol*1000*(1/ask)
+            est_profit = diff * leverage * order_vol * 1000 * (1 / ask)
             pedlar_est_profit = round(est_profit, 2)
         else:
             raise TypeError("order_type can only be 'buy' or 'sell'")
