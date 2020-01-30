@@ -9,9 +9,9 @@
      		alt="Github Repo Size">
 </p>
 
-# Pedlar 2.0 Demo's
+Important note: The code here is not optimised to be used in market conditions, it is instead should be used as an educational tool to teach key prinicples.
 
-[Pedlar 2.0 Repo](https://github.com/algotradingsoc/Demo-notebooks)
+### [Pedlar 2.0 Repo](https://github.com/algotradingsoc/Demo-notebooks)
 
 ## Content
 
@@ -27,11 +27,11 @@
 ## Next Steps:
 
 ### For agents:
-- [x] Decision tree based agent
-- [ ] Linear model based agent
-- [ ] NN based agent
-- [ ] RNN based agent
-- [ ] RL based agent
+- [x] Decision tree agent
+- [x] Linear agent
+- [ ] NN agent
+- [ ] RNN agent
+- [ ] RL agent
 
 ### For finding parameters:
 - [x] Explicit search
@@ -52,13 +52,9 @@
 
 ---
 
-<img src="misc/icats_logo.png" alt="icats_logo" width="150"/>
-
 # About us:
 
-### [Algo soc website](http://www.algosoc.com)
-
-### [Algo soc slack](https://algosoc.slack.com)
+### [Algo soc website](http://www.algosoc.com) | [Algo soc slack](https://algosoc.slack.com)
 
 ## Our trading platform Pedlar:
 
