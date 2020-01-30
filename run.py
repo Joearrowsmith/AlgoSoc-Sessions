@@ -54,6 +54,13 @@ def run_agent_from_args(args):
                      make_orders=args.no_make_order,
                      verbose=args.verbose,
                      backtest=backtest_path, **kwargs)
+    elif args.agent == 7:
+        from Agents.agent_7_linear_model_custom_loss import main as agent_7_main
+        agent_7_main(rets_length=args.rets_length,
+                     signal_mean_length=args.signal_mean_length,
+                     make_orders=args.no_make_order,
+                     verbose=args.verbose,
+                     backtest=backtest_path, **kwargs)
     else:
         raise NotImplementedError
 
